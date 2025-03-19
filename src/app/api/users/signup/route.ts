@@ -39,7 +39,7 @@ export async function  POST(request:NextRequest) {
         username:savedUser.username,
         email:savedUser.email
        }
-       const token=await jwt.sign(tokenData,process.env.TOKEN_SECRET!,{expiresIn:"6h"})
+       const token=await jwt.sign(tokenData,process.env.NEXTAUTH_SECRET!,{expiresIn:"6d"})
        const response= NextResponse.json({message:"User created successfully",success:true,user: savedUser})
 
        response.cookies.set("token",token,{
