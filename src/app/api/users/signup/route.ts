@@ -3,35 +3,48 @@ import User from "@/models/user"
 import { NextRequest,NextResponse } from "next/server"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-connect()
+import { sendVerificationEmail } from "@/helper/sendEmail";
+// connect()
 
 
 export async function  POST(request:NextRequest) {
+    await connect();
     try {
         const reqBody=await request.json()
-        const {username,email,password}=reqBody
+        const {username,email,password}=reqBody;
+        const verifyCode = Math.floor(Math.random()*900000 + 100000).toString();
 
         console.log(reqBody)
 
         //if user exists
-       const user= await User.findOne({email})
+       const user= await User.findOne({email});
 
-       if(user){
+       if(user && user.isVerified){
         return NextResponse.json({error:"User already exists"},{status:400})
        }
 
        //hash
        const salt=await bcrypt.genSalt(10)
        const hashedPassword=await bcrypt.hash(password,salt)
+       const expiryDate = new Date();
+       expiryDate.setHours(expiryDate.getHours()+1);
 
        const newUser=new User({
         username,
         email,
-        password:hashedPassword
+        password:hashedPassword,
+        verifyCode:verifyCode,
+        verifyCodeExpiry:expiryDate,
+        isVerified:false,
        })
 
        const savedUser=await newUser.save()
        console.log(savedUser);
+
+       const emailResponse = await sendVerificationEmail(email,verifyCode);
+        if(! emailResponse.success){
+           return NextResponse.json({success:false,message:"something went wrong"},{status:500});
+        }
 
 
        const tokenData={

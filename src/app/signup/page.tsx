@@ -28,8 +28,8 @@ export default function SignUp() {
   const onSignup = async (e: any) => {
     e.preventDefault();
     try {
-      router.push("/");
       const response = await axios.post("/api/users/signup", user);
+      router.replace(`/verify/${user.email}`);
       console.log("Signup success", response.data);
       
     } catch (error: any) {
