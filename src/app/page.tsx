@@ -26,7 +26,7 @@ export default function Home() {
         <div className="space-x-3">
           <a href="#login" className="text-primary font-semibold">Login</a>
           <a
-            href="#signup"
+            href="/signup"
             className="px-5 py-2 rounded-full bg-primary text-white hover:bg-secondary transition"
           >
             Sign Up
