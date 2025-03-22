@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  env: {
+    MONGO_URL: process.env.MONGO_URL,
+  },
 };
 
 export default nextConfig;

@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, models } from "mongoose";
+
+
 
 const userSchema=new mongoose.Schema({
     username:{
@@ -29,6 +31,8 @@ const userSchema=new mongoose.Schema({
     },
 })
 
-const User=mongoose.model("Users",userSchema);
+
+// Prevent re-compiling the model if it already exists
+const User = models.User || mongoose.model("User", userSchema);
 
 export default User;

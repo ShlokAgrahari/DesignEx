@@ -1,13 +1,18 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { connect } from "@/dbConfig/db"; // Ensure you have a DB connection
+import GitHubProvider from "next-auth/providers/github";
+import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
 
-export const authOptions: NextAuthOptions = {
+const authHandler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
   session: {
@@ -19,7 +24,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === "google") {
+      if (account?.provider === "google" || account?.provider === "github") {
         try {
           await connect(); // Ensure DB connection
 
@@ -30,8 +35,8 @@ export const authOptions: NextAuthOptions = {
             const newUser = new User({
               username: user.name,
               email: user.email,
-              provider: "google",
-              isVerified:true
+              provider: account.provider,
+              isVerified: true,
             });
 
             await newUser.save();
@@ -43,11 +48,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-     // Ensure this is set
-}
-}
+  },
+});
 
-const handler = NextAuth(authOptions);
-
-// ✅ Export both GET and POST handlers
-export { handler as GET, handler as POST };
+export { authHandler as GET, authHandler as POST };

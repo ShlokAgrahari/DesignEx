@@ -1,14 +1,14 @@
 @import "tailwindcss";
-@theme{
-  --color-primary:#6366F1;
-  --color-secondary:#EC4899;
-  --color-darkBg:#1a1a2e;
-  --color-glassLight:rgba(255, 255, 255, 0.2);
-  --color-glassDark:rgba(0, 0, 0, 0.4);
+@tailwind utilities;
+@theme {
+  --color-primary: #6366f1;
+  --color-secondary: #ec4899;
+  --color-darkBg: #1a1a2e;
+  --color-glassLight: rgba(255, 255, 255, 0.2);
+  --color-glassDark: rgba(0, 0, 0, 0.4);
   --font-display: "Inter", "sans-serif";
-  --shadow-3xl:0 4px 30px rgba(0, 0, 0, 0.1); 
+  --shadow-3xl: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
-
 
 :root {
   --background: #ffffff;
@@ -22,9 +22,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@layer components{
-  .glass{
-    @apply backdrop-blur-[20px] bg-white/15 border border-solid border-white/20 shadow-3xl dark:bg-black/40 dark:border-white/10
+@layer components {
+  .glass {
+    @apply backdrop-blur-[20px] border border-solid border-white/20 shadow-3xl dark:bg-black/40 dark:border-white/10;
   }
 }
 
