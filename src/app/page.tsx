@@ -24,9 +24,11 @@ export default function Home() {
           </a>
         </div>
         <div className="space-x-3">
-          <a href="#login" className="text-primary font-semibold">Login</a>
+          <a href="/login" className="text-primary font-semibold">
+            Login
+          </a>
           <a
-            href="#signup"
+            href="/signup"
             className="px-5 py-2 rounded-full bg-primary text-white hover:bg-secondary transition"
           >
             Sign Up
@@ -42,13 +44,20 @@ export default function Home() {
             DESIGNEX
           </h1>
           <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto">
-            Your Ultimate Creative Studio — Design posters, banners, presentations & more with ease.
+            Your Ultimate Creative Studio — Design posters, banners,
+            presentations & more with ease.
           </p>
           <div className="mt-6 space-x-4">
-            <a href="#explore" className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition">
+            <a
+              href="#explore"
+              className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition"
+            >
               Explore Now
             </a>
-            <a href="#features" className="px-8 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition">
+            <a
+              href="#features"
+              className="px-8 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition"
+            >
               See Features
             </a>
           </div>
@@ -59,13 +68,17 @@ export default function Home() {
       <section id="about" className="py-16 text-center">
         <h2 className="text-4xl font-bold mb-6">Why DESIGNEX?</h2>
         <p className="max-w-2xl mx-auto text-lg text-gray-700 dark:text-gray-300">
-          DESIGNEX is a powerful yet simple creative platform tailored for students, clubs, creators, and professionals who need fast, beautiful designs without any design experience.
+          DESIGNEX is a powerful yet simple creative platform tailored for
+          students, clubs, creators, and professionals who need fast, beautiful
+          designs without any design experience.
         </p>
       </section>
 
       {/* Solutions Section - Glass Cards Grid */}
       <section id="solutions" className="py-16 bg-gray-200 dark:bg-gray-800">
-        <h2 className="text-4xl font-bold text-center mb-12">What You Can Do</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">
+          What You Can Do
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
           <div className="glass p-6 rounded-xl">
             <h3 className="text-2xl font-bold mb-3">🎨 Drag & Drop Editor</h3>
@@ -73,22 +86,34 @@ export default function Home() {
           </div>
           <div className="glass p-6 rounded-xl">
             <h3 className="text-2xl font-bold mb-3">📂 100+ Templates</h3>
-            <p>Choose from ready-made designs tailored for colleges, clubs, and festivals.</p>
+            <p>
+              Choose from ready-made designs tailored for colleges, clubs, and
+              festivals.
+            </p>
           </div>
           <div className="glass p-6 rounded-xl">
             <h3 className="text-2xl font-bold mb-3">🔗 Share & Collaborate</h3>
-            <p>Instantly share your designs with your team for feedback & approval.</p>
+            <p>
+              Instantly share your designs with your team for feedback &
+              approval.
+            </p>
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
       <section id="explore" className="py-16 text-center">
-        <h2 className="text-4xl font-bold">Ready to Create Stunning Designs?</h2>
+        <h2 className="text-4xl font-bold">
+          Ready to Create Stunning Designs?
+        </h2>
         <p className="mt-3 max-w-2xl mx-auto">
-          Start your creative journey today and make your campus events shine like never before!
+          Start your creative journey today and make your campus events shine
+          like never before!
         </p>
-        <a href="#" className="mt-6 inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition">
+        <a
+          href="#"
+          className="mt-6 inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition"
+        >
           Start Designing
         </a>
       </section>
@@ -99,8 +124,12 @@ export default function Home() {
           © 2025 DESIGNEX - All rights reserved
         </p>
         <div className="mt-4 space-x-4">
-          <a href="#" className="hover:text-primary">Privacy Policy</a>
-          <a href="#" className="hover:text-primary">Terms of Service</a>
+          <a href="#" className="hover:text-primary">
+            Privacy Policy
+          </a>
+          <a href="#" className="hover:text-primary">
+            Terms of Service
+          </a>
         </div>
       </footer>
     </div>

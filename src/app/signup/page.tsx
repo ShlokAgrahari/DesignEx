@@ -11,8 +11,8 @@ import { signIn, useSession } from "next-auth/react";
 
 export default function SignUp() {
   const router = useRouter();
-  const session=useSession();
-  console.log(session)
+  const session = useSession();
+  console.log(session);
   const [user, setUser] = React.useState({
     email: "",
     password: "",
@@ -28,10 +28,12 @@ export default function SignUp() {
   const onSignup = async (e: any) => {
     e.preventDefault();
     try {
-      router.push("/");
       const response = await axios.post("/api/users/signup", user);
       console.log("Signup success", response.data);
-      
+      toast.success("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        router.push("/login"); // Redirect to login page after success
+      }, 2000); // Delay for user feedback
     } catch (error: any) {
       console.log("Sign up error", error.message);
       toast.error(error.message);
@@ -94,7 +96,10 @@ export default function SignUp() {
         <div className="social-signup w-full flex flex-wrap items-center justify-center gap-2 mt-4">
           <p className="text-white">Or Signup via</p>
 
-          <button onClick={()=>signIn("google")} className="group flex items-center justify-center p-3 rounded-lg hover:bg-white/20 transition">
+          <button
+            onClick={() => signIn("google")}
+            className="group flex items-center justify-center p-3 rounded-lg hover:bg-white/20 transition"
+          >
             <FontAwesomeIcon
               icon={faGoogle}
               className="text-indigo-500 group-hover:text-secondary transition duration-300"
@@ -102,7 +107,10 @@ export default function SignUp() {
             />
           </button>
 
-          <button className="group flex items-center justify-center p-3 rounded-lg hover:bg-white/20 transition">
+          <button
+            onClick={() => signIn("github")}
+            className="group flex items-center justify-center p-3 rounded-lg hover:bg-white/20 transition"
+          >
             <FontAwesomeIcon
               icon={faGithub}
               className="text-indigo-500 group-hover:text-secondary transition duration-300"
@@ -113,7 +121,10 @@ export default function SignUp() {
 
         <div className="mt-6 text-center text-sm text-glassDark">
           Already have an account?
-          <Link href="/login" className="text-secondary text-[2.2vh]  ml-1 hover:underline">
+          <Link
+            href="/login"
+            className="text-secondary text-[2.2vh]  ml-1 hover:underline"
+          >
             Sign In
           </Link>
         </div>
