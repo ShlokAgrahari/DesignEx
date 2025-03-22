@@ -29,6 +29,7 @@ export default function SignUp() {
     e.preventDefault();
     try {
       const response = await axios.post("/api/users/signup", user);
+      router.replace(`/verify/${user.email}`);
       console.log("Signup success", response.data);
       toast.success("Signup successful! Redirecting to login...");
       setTimeout(() => {

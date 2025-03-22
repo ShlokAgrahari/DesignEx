@@ -15,6 +15,13 @@ const authHandler = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // Session expires in 24 hours (in seconds)
+  },
+  jwt: {
+    maxAge: 24 * 60 * 60, // JWT expires in 24 hours (same as session)
+  },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google" || account?.provider === "github") {
