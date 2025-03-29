@@ -94,31 +94,7 @@ export default function SignIn() {
             onClick={() => signIn("google")}
             className="mt-4 flex items-center justify-center gap-3 bg-gray-100 text-gray-800 p-3 rounded-lg w-full hover:bg-gray-200 transition"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 48 48"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient
-                  id="googleGradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="100%"
-                >
-                  <stop offset="0%" stopColor="#4285F4" />
-                  <stop offset="50%" stopColor="#EA4335" />
-                  <stop offset="75%" stopColor="#FBBC05" />
-                  <stop offset="100%" stopColor="#34A853" />
-                </linearGradient>
-              </defs>
-              <path
-                fill="url(#googleGradient)"
-                d="M24 19.6v8.8h12.5c-1.2 3.6-4.6 6.1-8.5 6.1-5.2 0-9.5-4.2-9.5-9.5S18.8 15.5 24 15.5c2.3 0 4.3.8 5.9 2.1l6.6-6.6c-3.2-2.9-7.3-4.7-12.5-4.7-10.5 0-19 8.5-19 19s8.5 19 19 19c9.3 0 17.3-6.6 18.8-15.5H24z"
-              />
-            </svg>
+            <img src="googlelogo.webp" alt="Google Logo" className="w-9 h-9" />
             Continue with Google
           </button>
           <p className="mt-6 text-center text-sm text-gray-600">
