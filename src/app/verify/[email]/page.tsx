@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { ToastContainer, Zoom, toast } from 'react-toastify';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 export default function Verifyotp(){
@@ -34,9 +35,10 @@ export default function Verifyotp(){
                     verifyCode: finalOtp,
                 }
             ));
-            router.replace("/");
+            router.replace("/login");
         } catch (error) {
             console.log("error during verification ",error);
+            toast.error("Enter correct OTP")
         }
     }
 
@@ -67,6 +69,19 @@ export default function Verifyotp(){
             backgroundImage: `url("https://images.unsplash.com/photo-1729433321403-69cf73e9720a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")`,
           }}
         >
+            <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover={false}
+            theme="colored"
+            transition={Zoom}
+            />
 
             <div className="rounded-md p-6 min-h-[200px] bg-white/10 backdrop-blur-md border border-white/20 shadow-lg ">
                 <h2 className="text-center text-2xl mb-3 font-semibold text-white"> Enter the OTP Here</h2>
