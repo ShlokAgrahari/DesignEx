@@ -29,10 +29,21 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:false,
     },
+    myTeams: [
+        {
+            teamId: {
+                type: String,
+                required: true
+            },
+            teamName: {
+                type: String,
+                required: true
+            }
+        }
+    ]
 })
 
 
-// Prevent re-compiling the model if it already exists
 const User = models.User || mongoose.model("User", userSchema);
 
 export default User;

@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import toast from "react-hot-toast";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { signIn, useSession } from "next-auth/react";
+import { ToastContainer, Zoom, toast } from 'react-toastify';
+import 'react-toastify/ReactToastify.css'
+
 
 export default function SignUp() {
+  
+  
   const router = useRouter();
   const session = useSession();
   console.log(session);
@@ -31,13 +35,14 @@ export default function SignUp() {
       const response = await axios.post("/api/users/signup", user);
       router.replace(`/verify/${user.email}`);
       console.log("Signup success", response.data);
-      toast.success("Signup successful! Redirecting to login...");
-      setTimeout(() => {
-        router.push("/login"); // Redirect to login page after success
-      }, 2000); // Delay for user feedback
+      toast.success("Signup successful! Redirecting to login..."); // Delay for user feedback
     } catch (error: any) {
       console.log("Sign up error", error.message);
-      toast.error(error.message);
+      if (error.response?.data?.error === "User already exists") {
+        toast.error("User already exists! Please log in.");
+      } else {
+        toast.error(error.response?.data?.error || "Something went wrong");
+      }
     }
   };
 
@@ -48,6 +53,19 @@ export default function SignUp() {
         backgroundImage: `url(https://images.unsplash.com/photo-1729433321403-69cf73e9720a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
       }}
     >
+      <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss={false}
+draggable
+pauseOnHover={false}
+theme="colored"
+transition={Zoom}
+/>
       <div className="backdrop-blur-lg bg-white/10 border border-white/20 shadow-lg p-8 sm:p-12 rounded-xl w-full max-w-md md:max-w-lg lg:max-w-xl flex flex-col justify-center">
         <h2 className="text-2xl text-center text-primary font-semibold mb-6">
           Sign Up
