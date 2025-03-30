@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
-
+import { useAuthStore } from "@/store/useAuthStore";
 const authHandler = NextAuth({
   providers: [
     GoogleProvider({
@@ -17,10 +17,10 @@ const authHandler = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // Session expires in 24 hours (in seconds)
+    maxAge: 24 * 60 * 60, // Session expires in 24 hours
   },
   jwt: {
-    maxAge: 24 * 60 * 60, // JWT expires in 24 hours (same as session)
+    maxAge: 24 * 60 * 60, // JWT expires in 24 hours
   },
   callbacks: {
     async signIn({ user, account }) {
@@ -38,8 +38,8 @@ const authHandler = NextAuth({
               provider: account.provider,
               isVerified: true,
             });
-
             await newUser.save();
+            user.id =newUser._id; 
           }
         } catch (error) {
           console.error("Error saving user:", error);
@@ -47,6 +47,17 @@ const authHandler = NextAuth({
         }
       }
       return true;
+    },
+    
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Store MongoDB _id in JWT token
+      }
+      return token;
+    },
+    async redirect({ url, baseUrl }) {
+      return "/dashboard"; // Redirects user to dashboard after sign-in
     },
   },
 });

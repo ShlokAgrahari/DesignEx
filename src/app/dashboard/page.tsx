@@ -2,15 +2,29 @@
 
 import React from "react";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
 export default function Dashboard() {
   
   const user = useAuthStore((state) => state.user);
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session?.user) {
+      console.log("Logged-in user:", session.user);
+      console.log("User ID:","No ID available");
+    }
+  }, [session]);
 
   useEffect(() => {
-    console.log("Current user in Zustand store:", user);
-  }, [user]);
-
+    if (session?.user?.name && session?.user?.email) {
+      useAuthStore.getState().setUser({
+        id:  "",
+        name: session.user.name || "Guest",
+        email: session.user.email || "No Email",
+      });
+    }
+  }, [session]); 
+  
   
 
   

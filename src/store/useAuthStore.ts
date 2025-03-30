@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import Cookies from "js-cookie";
-
 interface User {
-  id: string;
+  id: string|null;
   name: string;
   email: string;
 }
