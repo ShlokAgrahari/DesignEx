@@ -1,6 +1,19 @@
-import React from "react";
+"use client"
 
+import React from "react";
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
 export default function Dashboard() {
+  
+  const user = useAuthStore((state) => state.user);
+
+  useEffect(() => {
+    console.log("Current user in Zustand store:", user);
+  }, [user]);
+
+  
+
+  
   return (
     <div className="flex h-screen w-screen font-[Poppins]">
       {/* Sidebar */}
@@ -30,6 +43,7 @@ export default function Dashboard() {
     className="px-3 py-[6px] w-[40%] text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600 shadow-sm transition-all"
   />
   <div className="flex gap-4">
+    
     <button className="bg-white h-[4vh] text-purple-700 text-sm font-medium px-4 py-[4px] rounded-md shadow-md hover:bg-purple-500 hover:text-white transition-all duration-300">
       Settings
     </button>

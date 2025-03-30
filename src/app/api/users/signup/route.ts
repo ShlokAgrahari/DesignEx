@@ -3,6 +3,7 @@ import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 import { sendVerificationEmail } from "@/helper/sendEmail";
 
 export async function POST(request: NextRequest) {
@@ -21,7 +22,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
     let user = await User.findOne({ email });
 
     // If user exists and is verified
@@ -36,9 +36,9 @@ export async function POST(request: NextRequest) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Set verification expiry
     const expiryDate = new Date();
-    expiryDate.setHours(expiryDate.getHours() + 1);
+expiryDate.setTime(expiryDate.getTime() + 60 * 60 * 1000); // Add 1 hour in milliseconds
+
 
     if (!user) {
       // Create new user if they don't exist
@@ -52,6 +52,15 @@ export async function POST(request: NextRequest) {
       });
 
       await user.save();
+    }
+    else{
+      user.username = username; // Update username if needed
+  user.password = hashedPassword; // Update password
+  user.verifyCode = verifyCode; // Generate a new verification code
+  user.verifyCodeExpiry = expiryDate; // Update expiry time
+  user.isVerified = false; // Ensure they still need verification
+
+  await user.save();
     }
 
     // Send verification email

@@ -2,29 +2,37 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
+
 export default function SignIn() {
   const router = useRouter();
-  const [user, setUser] = React.useState({ email: "", password: "" });
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+
+  // Local state for form inputs
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  
 
   useEffect(() => {
-    setButtonDisabled(!(user.email && user.password));
-  }, [user]);
+    setButtonDisabled(!(formData.email && formData.password));
+  }, [formData]);
 
   const onSignIn = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/users/signin", user);
+      const response = await axios.post("/api/users/login", formData);
       console.log("Sign-in success", response.data);
+      const { user, token } = response.data;
       toast.success("Signed in successfully!");
-      router.push("/");
+      useAuthStore.getState().setUser({ name: user.name, email: user.email,id:user.id });
+      router.push("/dashboard");
     } catch (error: any) {
       console.log("Sign-in error", error.message);
       toast.error("Invalid credentials. Try again.");
@@ -56,8 +64,10 @@ export default function SignIn() {
               <input
                 type="email"
                 name="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 placeholder="Email"
                 required
                 className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -68,8 +78,10 @@ export default function SignIn() {
               <input
                 type="password"
                 name="password"
-                value={user.password}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 placeholder="Password"
                 required
                 className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
