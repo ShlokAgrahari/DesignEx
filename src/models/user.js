@@ -19,11 +19,11 @@ const userSchema=new mongoose.Schema({
     },
     verifyCode:{
         type:String,
-        required:true,
+        
     },
     verifyCodeExpiry:{
         type:Date,
-        required:true,
+        
     },
     isVerified:{
         type:Boolean,
