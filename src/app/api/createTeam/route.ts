@@ -20,10 +20,10 @@ export async function POST(request:NextRequest) {
     
     try {
       const reqBody = await request.json();
-      const { teamName, user } = reqBody; // Get user info from frontend
+      const { teamName, user,projectName } = reqBody; // Get user info from frontend
 
-      if (!teamName || !user) {
-          return NextResponse.json({ message: "Team name and user info are required" }, { status: 400 });
+      if (!teamName || !user || !projectName) {
+          return NextResponse.json({ message: "All info are required" }, { status: 400 });
       }
 
       const teamId = await generateUniqueTeamId();
@@ -31,6 +31,7 @@ export async function POST(request:NextRequest) {
       const newTeam = new Team({
           teamId,
           teamName,
+          projectName,
           leaderId: user.id,
           leaderName: user.name,
           members: [{ id: user.id, name: user.name }],
@@ -39,7 +40,7 @@ export async function POST(request:NextRequest) {
       await newTeam.save();
 
       await User.findByIdAndUpdate(user.id, {
-        $push: { myTeams: { teamId: newTeam._id, teamName: newTeam.teamName } }
+        $push: { myTeams: { teamId: newTeam._id, teamName: newTeam.teamName,projectName:newTeam.projectName } }
     }, { new: true }); 
     
     return NextResponse.json({ message: "Team created successfully", teamId }, { status: 201 });

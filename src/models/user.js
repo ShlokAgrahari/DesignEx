@@ -38,6 +38,10 @@ const userSchema=new mongoose.Schema({
             teamName: {
                 type: String,
                 required: true
+            },
+            projectName:{
+                type:String,
+                required:true
             }
         }
     ]

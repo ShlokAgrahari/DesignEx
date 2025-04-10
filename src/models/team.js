@@ -1,4 +1,5 @@
 import mongoose, { Schema, models } from "mongoose";
+import { type } from "os";
 
 const teamSchema = new Schema({
     teamId: {
@@ -9,6 +10,10 @@ const teamSchema = new Schema({
     teamName: {
         type: String,
         required: true
+    },
+    projectName:{
+        type:String,
+        required:true
     },
     leaderId: {
             type: mongoose.Schema.Types.ObjectId,
