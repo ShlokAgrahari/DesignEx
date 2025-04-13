@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { FormEvent, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [teamName, setTeamName] = useState("");
   const [projectName, setProjectName] = useState("");
 
+
   useEffect(() => {
     if (session?.user?.name && session?.user?.email) {
       useAuthStore.getState().setUser({
@@ -23,6 +25,7 @@ export default function Dashboard() {
       });
     }
   }, [session]);
+
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +76,7 @@ export default function Dashboard() {
     }
   }
 
+
   return (
     <div className="flex h-screen w-screen font-[Poppins]">
       {/* Sidebar */}
@@ -81,20 +85,23 @@ export default function Dashboard() {
           Logo
         </div>
         <nav className="flex flex-col gap-4 w-full">
-          {["Home", "Templates", "My Designs", "My Teams", "Apps"].map((item) => (
-            <button
-              key={item}
-              className="bg-white py-2 px-4 rounded-lg shadow-md hover:bg-purple-300 transition-all duration-300"
-            >
-              {item}
-            </button>
-          ))}
+          {["Home", "Templates", "My Designs", "My Teams", "Apps"].map(
+            (item) => (
+              <button
+                key={item}
+                className="bg-white py-2 px-4 rounded-lg shadow-md hover:bg-purple-300 transition-all duration-300"
+              >
+                {item}
+              </button>
+            )
+          )}
         </nav>
       </div>
 
       {/* Main Content */}
       <div className="bg-purple-100 h-full w-[85%] flex flex-col px-[2vw] py-[1vw] items-center text-gray-900 text-2xl font-bold scrollbar-hide">
         {/* Top Bar */}
+
         <div className="bg-gradient-to-r from-purple-300 to-purple-400 h-20 w-full flex items-center justify-between px-6 shadow-lg rounded-xl scrollbar-hide">
 
           <input
@@ -116,12 +123,14 @@ export default function Dashboard() {
         <div className="bg-white h-[90vh] p-[1vw] w-full mt-2 rounded-lg shadow-lg overflow-y-auto overflow-x-hidden scrollbar-hide">
 
 
+
           <div className="bg-purple-400 h-[30vh] flex items-center justify-center text-white text-2xl font-semibold rounded-lg shadow-md">
             Carousel
           </div>
 
           {/* Buttons */}
           <div className="flex gap-4 mt-4">
+
             <button
               className="bg-gradient-to-r from-pink-300 to-purple-400 text-white border-none rounded-2xl h-[10vh] px-6 text-lg font-semibold shadow-md hover:scale-105 transition-transform duration-300"
             >
@@ -139,6 +148,7 @@ export default function Dashboard() {
             >
               Join a Team
             </button>
+
           </div>
           {joinForm && (
   <div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
@@ -214,7 +224,9 @@ export default function Dashboard() {
           )}
 
           {/* Recent Work */}
-          <h1 className="mt-6 text-gray-800 text-xl font-semibold">Recent Work</h1>
+          <h1 className="mt-6 text-gray-800 text-xl font-semibold">
+            Recent Work
+          </h1>
           <div className="min-w-full min-h-[30vh] bg-purple-200 p-4 rounded-lg shadow-md mt-2">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((num) => (
@@ -229,8 +241,10 @@ export default function Dashboard() {
                       className="h-full w-full object-cover rounded-md hover:scale-110 transition-transform duration-300"
                     />
                   </div>
+
                   <h3 className="mt-2 text-lg font-semibold text-gray-900">Title {num}</h3>
                   <p className="text-sm text-gray-600">Edited: {["2 hours ago", "5 hours ago", "Yesterday", "3 days ago"][num - 1]}</p>
+
                 </div>
               ))}
             </div>
