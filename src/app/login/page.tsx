@@ -14,7 +14,6 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 export default function SignIn() {
   const router = useRouter();
 
-  // Local state for form inputs
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
