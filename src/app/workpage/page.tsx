@@ -1,4 +1,114 @@
+"use client";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useGetCallById } from "@/hooks/useGetCallById";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+
 export default function WorkPage() {
+
+  const user = useAuthStore((state) => state.user);
+  const router = useRouter();
+  const client = useStreamVideoClient();
+  const [value,setvalue] = useState({
+    Datetime:new Date(),
+    description:"",
+    link:""
+  })
+  const [callDetails,setcallDetails] = useState<Call>()
+
+  const createMeeting = async()=>{
+    if(!client || !user){
+        return;
+    }
+    try {
+        const id = crypto.randomUUID();
+        const call = client.call("default",id);
+
+        if(!call){
+            throw new Error("falied to create meeting");
+        }
+
+        const startAt = value.Datetime.toISOString() || new Date(Date.now()).toISOString();
+        const description = value.description || "instant meeting";
+
+        await call.getOrCreate({
+            data:{
+                starts_at:startAt,
+                custom:{
+                    description
+                }
+            }
+        });
+
+        setcallDetails(call);
+        if(!value.description){
+            router.replace(`/meeting/${call.id}`);
+        }
+    } catch (error) {
+        console.log("meeting error ",error);
+    }
+}
+
+
+
+////------------------ create personal meeting room, code ------------------
+
+const meetingId = "67d5130283de1702784edbe6";
+const {call} = useGetCallById(meetingId!);
+const createPersonalMeeting = async()=>{
+  if(!client || !user){
+    return;
+  }
+  const newcall = client.call('default',meetingId!);
+  if(!call){
+    await newcall.getOrCreate({
+      data:{
+        starts_at:new Date().toISOString(),
+      }
+    })
+  }
+  router.replace(`/meeting/${meetingId}?personal=true`)
+}
+
+
+// -----------------function to join meeing --------------
+
+
+
+
+ const meetId = "67d5130283de1702784edbe6";
+ const emailId = "ayushverma225305@gmail.com";
+
+ const joinMeeting = async()=>{
+     if(!client || !meetId){
+         return;
+     }
+     try {
+         const response = await axios.get("/api/meeting-status", {
+             params: {
+               email: emailId,
+             },
+         });
+         const result = response.data;
+         const status = result.activeStatus;
+         if(!status){
+             toast("No Meeting exists now");
+         }
+         else{
+             router.replace(`/meeting/${meetId}`);
+         }
+     } catch (error) {
+         console.log("joining meeting error is",error);
+     }       
+ }
+
+
+
+
   return (
     <div className="flex h-screen bg-black text-white">
       {/* Sidebar */}
@@ -24,9 +134,11 @@ export default function WorkPage() {
             <p className="text-sm text-gray-300">team leader</p>
             <p className="text-sm text-gray-300">team code</p>
           </div>
-          <button className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition">
+          <button className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition" onClick={createPersonalMeeting}>
             VC join/start
           </button>
+          <button className="text-white bg-amber-950 p-4 " onClick={createMeeting}>Create Meeting</button>
+          <button className="text-white bg-amber-950 p-4" onClick={joinMeeting}>Join meeting</button>
         </div>
 
         {/* Content Area */}
