@@ -9,6 +9,7 @@ import axios from "axios";
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
   const { data: session } = useSession();
+  console.log("user ",user);
   const[joinForm,setJoin]=useState(false);
   const[teamId,setTeamId]=useState("")
   const [showForm, setShowForm] = useState(false);
