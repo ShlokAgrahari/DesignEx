@@ -12,15 +12,13 @@ import "react-toastify/ReactToastify.css";
 
 export default function SignupPage() {
   const router = useRouter();
-  
-  
-  const { data: session, status } = useSession();
-  
-useEffect(() => {
-  console.log("Session Data:", session, "Status:", status);
-}, [session, status]);
 
-  
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    console.log("Session Data:", session, "Status:", status);
+  }, [session, status]);
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -124,10 +122,20 @@ useEffect(() => {
           <p className="text-gray-900 font-semibold text-lg drop-shadow-lg">
             Or Signup via
           </p>
-          <button onClick={() => signIn("google")} className="group flex items-center justify-center p-3 rounded-xl hover:bg-gray-900/10 transition-all duration-300 backdrop-blur-3xl shadow-lg">
-            <img src="googlelogo.webp" alt="Google Logo" className="w-12 h-12" />
+          <button
+            onClick={() => signIn("google")}
+            className="group flex items-center justify-center p-3 rounded-xl hover:bg-gray-900/10 transition-all duration-300 backdrop-blur-3xl shadow-lg"
+          >
+            <img
+              src="googlelogo.webp"
+              alt="Google Logo"
+              className="w-12 h-12"
+            />
           </button>
-          <button onClick={() => signIn("github")} className="group flex items-center justify-center p-3 rounded-xl hover:bg-gray-900/10 transition-all duration-300 backdrop-blur-3xl shadow-lg">
+          <button
+            onClick={() => signIn("github")}
+            className="group flex items-center justify-center p-3 rounded-xl hover:bg-gray-900/10 transition-all duration-300 backdrop-blur-3xl shadow-lg"
+          >
             <img src="Glogo.png" alt="Github Logo" className="w-12 h-12" />
           </button>
         </div>
