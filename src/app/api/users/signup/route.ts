@@ -54,7 +54,7 @@ expiryDate.setTime(expiryDate.getTime() + 60 * 60 * 1000); // Add 1 hour in mill
       await user.save();
     }
     else{
-      user.username = username; // Update username if needed
+  user.username = username; // Update username if needed
   user.password = hashedPassword; // Update password
   user.verifyCode = verifyCode; // Generate a new verification code
   user.verifyCodeExpiry = expiryDate; // Update expiry time

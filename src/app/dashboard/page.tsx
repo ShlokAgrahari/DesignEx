@@ -71,6 +71,7 @@ export default function Dashboard() {
       }
       console.log("Error in joining",error);
     }
+    
   }
 
   return (
