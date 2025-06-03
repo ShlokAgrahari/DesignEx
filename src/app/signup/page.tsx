@@ -86,7 +86,7 @@ export default function SignupPage() {
             onChange={(e) => setUser({ ...user, username: e.target.value })}
             placeholder="Username"
             required
-            className="w-full p-3 bg-white/20 border border-white/30 rounded text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
+            className="w-full p-3 bg-white/20 border border-white/30 rounded dark:text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white "
           />
 
           <input
@@ -96,7 +96,7 @@ export default function SignupPage() {
             onChange={(e) => setUser({ ...user, email: e.target.value })}
             placeholder="Email"
             required
-            className="w-full p-3 bg-white/20 border border-white/30 rounded text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
+            className="w-full p-3 bg-white/20 border border-white/30 rounded dark:text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
           />
 
           <input
@@ -106,7 +106,7 @@ export default function SignupPage() {
             onChange={(e) => setUser({ ...user, password: e.target.value })}
             placeholder="Password"
             required
-            className="w-full p-3 bg-white/20 border border-white/30 rounded text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
+            className="w-full p-3 bg-white/20 border border-white/30 rounded dark:text-glassDark placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
           />
 
           <button

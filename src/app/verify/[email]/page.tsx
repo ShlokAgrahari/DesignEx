@@ -99,7 +99,7 @@ export default function Verifyotp(){
                         })}
                     </div>
                     <div className="flex justify-center">
-                        <button type="submit"  className="p-2 text-sm md:text-lg bg-primary text-white rounded-md mt-2.5 pl-8 pr-8 hover:bg-secondary">Submit</button>
+                        <button type="submit"  className="p-2 text-sm md:text-lg bg-primary text-white rounded-md mt-2.5 pl-8 pr-8 hover:bg-secondary hover:text-black">Submit</button>
                     </div>
                     
                 </form>

@@ -36,9 +36,11 @@ const MeetingSetup = ({setisSetupComplete,}:{setisSetupComplete:(value:boolean)=
                 </label>
                 <DeviceSettings/>
             </div>
-            <Button className=' bg-green-400 text-white text-xl p-5' onClick={()=>{call.join(); setisSetupComplete(true)}}>
+            <div className='bg-blue-500 p-2 rounded-[5px]'>
+                <Button className=' text-white text-xl' onClick={()=>{call.join(); setisSetupComplete(true)}}>
                 Join meeting
             </Button>
+            </div>
         </div>
     )
 }

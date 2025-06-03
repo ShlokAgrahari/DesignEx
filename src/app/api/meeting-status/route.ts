@@ -1,20 +1,20 @@
 import {connect} from "@/dbConfig/db"
-import userModel from "@/models/user";
+import Team from "@/models/team";
 
 
 export async function GET(request:Request){
     await connect();
     try {
         const { searchParams } = new URL(request.url);
-        const email = searchParams.get("email");
-        const user = await userModel.findOne({email});
-        if(!user){
+        const teamId = searchParams.get("team_id");
+        const team = await Team.findById(teamId);
+        if(!team){
             return Response.json({
                 success:false,
-                message:"user does not found",
+                message:"Team does not found",
             },{status:500});
         }
-        const activeStatus = user.isActive;
+        const activeStatus = team.isActive;
         return Response.json(
             {
               success: true,
