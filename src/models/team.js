@@ -24,6 +24,11 @@ const teamSchema = new Schema({
             type: String,
             required: true
     },
+    isActive:{
+            type:Boolean,
+            required:true,
+            default:false,
+    },
     members: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,

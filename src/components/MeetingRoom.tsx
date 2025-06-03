@@ -20,7 +20,7 @@ import Loader from './ui/Loader';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
-const MeetingRoom = () => {
+const MeetingRoom = ({teamId,}:{teamId:string}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get('personal');
@@ -37,8 +37,10 @@ const MeetingRoom = () => {
     const setMeeting = async()=>{
       if(isPersonalRoom){
         try {
-          const response = await axios.post("/api/setMeeting");
-        } catch (error) {
+          const response = await axios.post("/api/setMeeting",{
+              team_id:teamId
+          });
+        }catch (error) {
           console.log("setting status of meeting error is ",error);
         }
       }
@@ -122,7 +124,7 @@ const MeetingRoom = () => {
               <DropdownMenuSeparator className='border-black' />
             </DropdownMenuContent>
         </DropdownMenu>
-        {isPersonalRoom && <EndCallButton/>}
+        {isPersonalRoom && <EndCallButton team_id={teamId}/>}
         {/* {isPersonalRoom && <p>personal room</p>} */}
       </div>
     </section>

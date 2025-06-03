@@ -25,7 +25,7 @@ const meeting = ({params}:{params:Promise<{id:string}>}) => {
           {!isSetupComplete?(
             <MeetingSetup setisSetupComplete={setisSetupComplete}/>
           ):(
-            <MeetingRoom/>
+            <MeetingRoom teamId = {id}/>
           )}
         </StreamTheme>
       </StreamCall>
