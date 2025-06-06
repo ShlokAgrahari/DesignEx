@@ -6,34 +6,48 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useAuthStore } from "@/store/useAuthStore";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
-
 export default function SignIn() {
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  
 
   useEffect(() => {
     setButtonDisabled(!(formData.email && formData.password));
   }, [formData]);
 
-  const onSignIn = async (e: any) => {
+  // Redirect if already logged in via Google
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      useAuthStore.getState().setUser({
+        id: "",
+        name: session.user.name || "Guest",
+        email: session.user.email || "No Email",
+      });
+      router.push("/dashboard");
+    }
+  }, [session, status, router]);
+
+  const onSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post("/api/users/login", formData);
-      console.log("Sign-in success", response.data);
-      const { user, token } = response.data;
+      const { user } = response.data;
+
       toast.success("Signed in successfully!");
-      useAuthStore.getState().setUser({ name: user.name, email: user.email,id:user.id });
+      useAuthStore.getState().setUser({
+        name: user.name,
+        email: user.email,
+        id: user.id,
+      });
+
       router.push("/dashboard");
     } catch (error: any) {
-      console.log("Sign-in error", error.message);
+      console.error("Sign-in error", error);
       toast.error("Invalid credentials. Try again.");
     }
   };
@@ -52,7 +66,6 @@ export default function SignIn() {
             className="object-cover"
           />
         </div>
-
         <div className="p-8 sm:p-12 w-full md:w-1/2 flex flex-col justify-center">
           <h2 className="text-4xl text-center font-extrabold mb-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
             Welcome to DesignEx
@@ -88,26 +101,27 @@ export default function SignIn() {
             </div>
             <button
               type="submit"
-              className={`w-full bg-indigo-500 text-white p-3 rounded-lg font-semibold transition-all duration-300 hover:bg-indigo-600 ${
-                buttonDisabled ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`w-full bg-indigo-500 text-white p-3 rounded-lg font-semibold transition-all duration-300 hover:bg-indigo-600 ${buttonDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={buttonDisabled}
             >
               {buttonDisabled ? "Enter all details" : "Sign In"}
             </button>
           </form>
+
           <div className="flex items-center justify-center mt-6">
             <div className="w-full h-px bg-gray-300"></div>
             <p className="mx-4 text-gray-500 text-sm">OR</p>
             <div className="w-full h-px bg-gray-300"></div>
           </div>
+
           <button
-            onClick={() => signIn("google")}
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
             className="mt-4 flex items-center justify-center gap-3 bg-gray-100 text-gray-800 p-3 rounded-lg w-full hover:bg-gray-200 transition"
           >
-            <img src="googlelogo.webp" alt="Google Logo" className="w-9 h-9" />
+            <img src="/googlelogo.webp" alt="Google Logo" className="w-9 h-9" />
             Continue with Google
           </button>
+
           <p className="mt-6 text-center text-sm text-gray-600">
             Don't have an account?
             <Link

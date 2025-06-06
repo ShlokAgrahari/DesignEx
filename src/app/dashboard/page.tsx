@@ -1,13 +1,15 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-  const user = useAuthStore((state) => state.user);
   const { data: session } = useSession();
+  const user = useAuthStore((state) => state.user);
   const [joinForm, setJoin] = useState(false);
   const [teamId, setTeamId] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -17,9 +19,10 @@ export default function Dashboard() {
     lat: number;
     lng: number;
   } | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (session?.user?.name && session?.user?.email) {
+    if (session?.user) {
       useAuthStore.getState().setUser({
         id: "",
         name: session.user.name || "Guest",
@@ -40,7 +43,17 @@ export default function Dashboard() {
     );
   }, [session]);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: false });
+      router.push("/login");
+    } catch (error: any) {
+      console.error("Logout error:", error.message);
+      toast.error("Logout failed.");
+    }
+  };
+
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!teamName || !projectName) return alert("Please fill all fields");
 
@@ -85,7 +98,6 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen w-screen font-[Poppins] bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden">
-      {/* Sidebar */}
       <div className="bg-white h-full w-[15%] p-5 flex flex-col items-center shadow-xl border-r border-gray-300">
         <div className="relative w-full flex justify-center mb-8">
           <img
@@ -105,12 +117,17 @@ export default function Dashboard() {
               </button>
             )
           )}
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white py-2 px-4 rounded-xl shadow-md hover:scale-105 transition-all duration-300 mt-4"
+          >
+            Logout
+          </button>
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col p-6 overflow-y-auto scrollbar-hide">
-        {/* Top Bar */}
         <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-4 flex items-center justify-between mb-4">
           <input
             type="text"
@@ -127,12 +144,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Carousel */}
         <div className="h-[30vh] w-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-white text-3xl font-bold shadow-lg mb-6">
           DesignEx Carousel
         </div>
 
-        {/* Action Buttons */}
         <div className="flex flex-wrap gap-6 mb-6">
           <button className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform">
             Create a Design
@@ -157,7 +172,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Join Form Modal */}
         {joinForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
             <div className="bg-white p-8 rounded-xl shadow-2xl w-[90%] max-w-md">
@@ -182,7 +196,7 @@ export default function Dashboard() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition"
                   >
                     Join
                   </button>
@@ -191,80 +205,6 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        {/* Create Form Modal */}
-        {showForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-            <div className="bg-white p-8 rounded-xl shadow-2xl w-[90%] max-w-md">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
-                Create a Team
-              </h2>
-              <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="Team Name"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Project Name"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
-                  >
-                    Create
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Recent Work */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-3">
-          Recent Work
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((num) => (
-            <div
-              key={num}
-              className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300"
-            >
-              <div className="h-[20vh] bg-gray-200 rounded-md overflow-hidden flex justify-center items-center">
-                <img
-                  src={`https://via.placeholder.com/150?text=Image+${num}`}
-                  alt={`Thumbnail ${num}`}
-                  className="h-full w-full object-cover hover:scale-110 transition-transform"
-                />
-              </div>
-              <h3 className="mt-2 text-lg font-semibold text-gray-800">
-                Title {num}
-              </h3>
-              <p className="text-sm text-gray-500">
-                Edited:{" "}
-                {
-                  ["2 hours ago", "5 hours ago", "Yesterday", "3 days ago"][
-                    num - 1
-                  ]
-                }
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
