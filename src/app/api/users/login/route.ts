@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await User.findOne({ email });
-    const name=user.username;
-    console.log("user from backend",user);
+    const name = user.username;
+    console.log("user from backend", user);
     if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
