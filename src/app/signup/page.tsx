@@ -9,11 +9,12 @@ import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { signIn, useSession } from "next-auth/react";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { useLoading } from "@/context/LoadingContext";
 
 export default function SignupPage() {
   const router = useRouter();
-
   const { data: session, status } = useSession();
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     console.log("Session Data:", session, "Status:", status);
@@ -34,6 +35,7 @@ export default function SignupPage() {
   const onSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await axios.post("/api/users/signup", user);
       router.replace(`/verify/${user.email}`);
       console.log("Signup success", response.data);
@@ -45,6 +47,8 @@ export default function SignupPage() {
       } else {
         toast.error(error.response?.data?.error || "Something went wrong");
       }
+    } finally {
+      setLoading(false);
     }
   };
 

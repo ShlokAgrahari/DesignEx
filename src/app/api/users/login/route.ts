@@ -19,8 +19,6 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await User.findOne({ email });
-    const name = user.username;
-    console.log("user from backend", user);
     if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -37,21 +35,31 @@ export async function POST(request: NextRequest) {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id.toString(), email: user.email },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: "6d" }
     );
-    console.log(token);
-    return NextResponse.json({
+
+    const response = NextResponse.json({
       message: "Login successful",
       success: true,
-      token,
       user: {
-        id: user._id,
+        id: user._id.toString(),
         email: user.email,
-        name: name, // Include other necessary user fields
+        name: user.username,
       },
     });
+
+    // Set HTTP-only cookie for token, accessible in middleware
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 6 * 24 * 60 * 60, // 6 days in seconds
+      path: "/",
+      sameSite: "lax",
+    });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
