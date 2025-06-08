@@ -24,7 +24,7 @@ import Path from "./Path";
 import SelectionBox from "./SelectionBox";
 import useDeleteLayers from "@/hooks/useDeleteLayers";
 import SelectionTools from "./SelectionTools";
-import Sidebars from "../sidebars/SideBars";
+import Sidebars from "../sidebars/Sidebars";
 
 const MAX_LAYERS = 100;
 
