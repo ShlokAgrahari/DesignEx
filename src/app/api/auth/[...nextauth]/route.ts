@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
+import  CredentialsProvider  from "next-auth/providers/credentials";
 import { useAuthStore } from "@/store/useAuthStore";
 const authHandler = NextAuth({
   providers: [
@@ -14,6 +15,27 @@ const authHandler = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials?: Record<"email" | "password", string> | undefined) {
+    if (!credentials) return null;
+        await connect();
+        const user = await User.findOne({ email: credentials?.email });
+        if (!user) return null;
+
+        // Verify password here (e.g., bcrypt.compare)
+        // Example assuming plain text (not recommended):
+        if (credentials?.password === user.password) {
+          return user; // return user object if auth succeeds
+        }
+        return null; // auth failed
+      },
+    }),
+  
   ],
   session: {
     strategy: "jwt",
@@ -48,7 +70,13 @@ const authHandler = NextAuth({
       }
       return true;
     },
-    
+    async session({ session, token }) {
+  if (token?.id) {
+    (session.user as any).id = token.id;
+  }
+  return session;
+},
+
 
     async jwt({ token, user }) {
       if (user) {
