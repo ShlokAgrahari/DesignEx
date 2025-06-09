@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 
-connect();
+connect(); // Initial DB connection
 
 const handler = NextAuth({
   providers: [
@@ -21,6 +22,7 @@ const handler = NextAuth({
           password: string;
         };
 
+        await connect();
         const user = await User.findOne({ email });
         if (!user) throw new Error("No user found");
 
@@ -38,14 +40,47 @@ const handler = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
   ],
+
   pages: {
-    signIn: "/login", // makes sure failed Google login also redirects here
+    signIn: "/login",
   },
+
   session: {
     strategy: "jwt",
   },
+
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" || account?.provider === "github") {
+        try {
+          await connect();
+          const existingUser = await User.findOne({ email: user.email });
+
+          if (!existingUser) {
+            const newUser = new User({
+              username: user.name,
+              email: user.email,
+              provider: account.provider,
+              isVerified: true,
+            });
+            await newUser.save();
+            user.id = newUser._id;
+          } else {
+            user.id = existingUser._id;
+          }
+        } catch (error) {
+          console.error("OAuth signIn error:", error);
+          return false;
+        }
+      }
+      return true;
+    },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -54,11 +89,15 @@ const handler = NextAuth({
       }
       return token;
     },
+
     async session({ session, token }) {
-      session.user.id = token.id;
+      if (token?.id) {
+        (session.user as any).id = token.id;
+      }
       return session;
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 });
 

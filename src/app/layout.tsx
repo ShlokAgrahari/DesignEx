@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/components/AuthProvider/AuthProvider";
+
 import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/LoadingOverlay";
+
+
+import AuthProvider from "@/components/AuthProvider/AuthProvider"
+import { StreamVideoProvider } from "@/providers/StreamClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +34,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+
         <LoadingProvider>
           <LoadingOverlay />
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <StreamVideoProvider>
+              {children}
+              </StreamVideoProvider>
+          </AuthProvider>
         </LoadingProvider>
+
       </body>
     </html>
   );

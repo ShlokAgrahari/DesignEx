@@ -9,9 +9,14 @@ import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { data: session } = useSession();
+
   const user = useAuthStore((state) => state.user);
   const [joinForm, setJoin] = useState(false);
   const [teamId, setTeamId] = useState("");
+
+
+  console.log("user ",user);
+ 
   const [showForm, setShowForm] = useState(false);
   const [teamName, setTeamName] = useState("");
   const [projectName, setProjectName] = useState("");
