@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { data: session } = useSession();
-
+  const setUser = useAuthStore((state) => state.setUser);
+   
   const user = useAuthStore((state) => state.user);
   const [joinForm, setJoin] = useState(false);
   const [teamId, setTeamId] = useState("");
@@ -26,27 +27,36 @@ export default function Dashboard() {
   } | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (session?.user) {
-      useAuthStore.getState().setUser({
-        id: "",
-        name: session.user.name || "Guest",
-        email: session.user.email || "No Email",
-      });
-    }
+    
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      }
-    );
-  }, [session]);
+  useEffect(() => {
+  if (session?.user) {
+    console.log("Full session:", session);
+
+    const updatedUser = {
+      id: session.user.id ?? "",
+      name: session.user.name ?? "Guest",
+      email: session.user.email ?? "",
+    };
+    console.log("Updating Zustand store with user from session:", updatedUser);
+    setUser(updatedUser);
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      setUserLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    },
+    (error) => {
+      console.error("Error getting location:", error);
+    }
+  );
+}, [session]);
+
+
+    
 
   const handleLogout = async () => {
     try {

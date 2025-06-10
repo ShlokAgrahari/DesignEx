@@ -21,6 +21,7 @@ import { LiveObject } from "@liveblocks/client";
 import { useEffect, useState, useCallback } from "react";
 import ToolsBar from "../toolsbar/ToolsBar";
 import Path from "./Path";
+import { useRoom } from "@liveblocks/react";
 import SelectionBox from "./SelectionBox";
 import useDeleteLayers from "@/hooks/useDeleteLayers";
 import SelectionTools from "./SelectionTools";
@@ -29,6 +30,12 @@ import Sidebars from "../sidebars/Sidebars";
 const MAX_LAYERS = 100;
 
 export default function Canvas() {
+   const room = useRoom();
+
+  if (room == null) {
+    // not yet connected to Liveblocks
+    return null;
+  }
   const roomColor = useStorage((root) => root.roomColor);
   const layerIds = useStorage((root) => root.layerIds);
   const layers = useStorage((root) => root.layers); // Needed to check if storage is ready
@@ -489,7 +496,7 @@ const updateSelectionNet = useMutation(
         canUndo={canUndo}/>
 
         {/* <Sidebars leftIsMinimized={leftIsMinimized} setLeftIsMinimized={setLeftIsMinimized}/> */}
-        <Sidebars/>
+        
     </div>
   );
 }
