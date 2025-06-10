@@ -5,7 +5,7 @@ import "./globals.css";
 import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/LoadingOverlay";
 
-
+import StreamWrapper from "@/providers/StreamWrapper";
 import AuthProvider from "@/components/AuthProvider/AuthProvider"
 import { StreamVideoProvider } from "@/providers/StreamClientProvider";
 
@@ -31,19 +31,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-
-        <LoadingProvider>
+      <body>
+        {/* <LoadingProvider>
           <LoadingOverlay />
           <AuthProvider>
-            <StreamVideoProvider>
+            <StreamWrapper>
               {children}
-              </StreamVideoProvider>
+            </StreamWrapper>
           </AuthProvider>
+        </LoadingProvider> */}
+        <LoadingProvider>
+              <LoadingOverlay />
+        <AuthProvider>
+          
+            {children}
+          
+          
+        </AuthProvider>
         </LoadingProvider>
-
+       
+        
       </body>
     </html>
   );

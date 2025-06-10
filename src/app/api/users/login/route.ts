@@ -10,14 +10,14 @@ export async function POST(request: NextRequest) {
 
     const reqBody = await request.json();
     const { email, password } = reqBody;
-
+    console.log("user on backend signin",reqBody);
     if (!email || !password) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
       );
     }
-
+   
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(

@@ -8,41 +8,34 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import { useLoading } from "@/context/LoadingContext";
+
 
 export default function SignIn() {
   const router = useRouter();
   const { data: session } = useSession();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const { setLoading } = useLoading();
-
+ 
   useEffect(() => {
     setButtonDisabled(!(formData.email && formData.password));
   }, [formData]);
 
   const onSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    
+    console.log("user on signin",formData);
     const res = await signIn("credentials", {
       redirect: false,
       email: formData.email,
       password: formData.password,
     });
 
-    setLoading(false);
+    
 
     if (res?.ok) {
       toast.success("Signed in successfully!");
 
-      // Set user info to store if needed
-      useAuthStore.getState().setUser({
-        id: "", // Replace with actual ID if available
-        name: formData.email.split("@")[0], // Basic name fallback
-        email: formData.email,
-      });
-
+      
       router.push("/dashboard");
     } else {
       toast.error("Invalid credentials. Try again.");

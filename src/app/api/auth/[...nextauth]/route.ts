@@ -5,7 +5,7 @@ import GitHubProvider from "next-auth/providers/github";
 import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
-
+import { useAuthStore } from "@/store/useAuthStore";
 connect(); // Initial DB connection
 
 const handler = NextAuth({
@@ -21,17 +21,17 @@ const handler = NextAuth({
           email: string;
           password: string;
         };
-
+          console.log("user on backend signin", credentials);
         await connect();
         const user = await User.findOne({ email });
         if (!user) throw new Error("No user found");
-
+        console.log("user from nextauth",user);
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) throw new Error("Invalid password");
-
+        
         return {
           id: user._id.toString(),
-          name: user.name,
+          name: user.name||user.username,
           email: user.email,
         };
       },
@@ -60,7 +60,7 @@ const handler = NextAuth({
         try {
           await connect();
           const existingUser = await User.findOne({ email: user.email });
-
+          console.log("exsisting user",existingUser);
           if (!existingUser) {
             const newUser = new User({
               username: user.name,
@@ -81,6 +81,7 @@ const handler = NextAuth({
       return true;
     },
 
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -92,7 +93,11 @@ const handler = NextAuth({
 
     async session({ session, token }) {
       if (token?.id) {
-        (session.user as any).id = token.id;
+        session.user = {
+      id: token.id as string,
+      name: token.name as string,
+      email: token.email as string,
+    };
       }
       return session;
     },
