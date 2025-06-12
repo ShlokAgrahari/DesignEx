@@ -1,4 +1,5 @@
 import { BaseUserMeta ,User} from "@liveblocks/client";
+import fabric from "fabric";
 
 
 
@@ -9,6 +10,81 @@ export type LiveCursorProps = {
   others:readonly User<Presence,BaseUserMeta>[];
 }
 
+
+export type CanvasMouseDown = {
+  options:fabric.TEvent;
+  canvas:fabric.Canvas;
+  selectedShapeRef:any;
+  isDrawing: React.RefObject<boolean>;
+  shapeRef: React.RefObject<fabric.Object | null>;
+}
+
+
+export interface CustomFabricObject<T extends fabric.Object>
+  extends fabric.Object {
+  objectId?: string;
+}
+
+
+export type CanvasMouseMove = {
+  options: fabric.TEvent;
+  canvas: fabric.Canvas;
+  isDrawing: React.RefObject<boolean>;
+  selectedShapeRef: any;
+  shapeRef: any;
+  syncShapeInStorage: (shape: fabric.Object) => void;
+};
+
+
+export type CanvasMouseUp = {
+  canvas: fabric.Canvas;
+  isDrawing: React.RefObject<boolean>;
+  shapeRef: any;
+  activeObjectRef: React.RefObject<fabric.Object | null>;
+  selectedShapeRef: any;
+  syncShapeInStorage: (shape: fabric.Object) => void;
+  setActiveElement: any;
+};
+
+
+export type CanvasObjectModified = {
+  options: (fabric.TEvent & { path: CustomFabricObject<fabric.Path> }) | any;
+  syncShapeInStorage: (shape: fabric.Object) => void;
+}
+
+export type CanvasPathCreated = {
+  options: (fabric.TEvent & { path: CustomFabricObject<fabric.Path> }) | any;
+  syncShapeInStorage:(shape:fabric.Object)=>void;
+}
+
+export type Attributes = {
+  width: string;
+  height: string;
+  fontSize: string;
+  fontFamily: string;
+  fontWeight: string;
+  fill: string;
+  stroke: string;
+};
+
+export type CanvasSelectionCreated = {
+  options: (fabric.TEvent & { path: CustomFabricObject<fabric.Path> }) | any;
+  isEditingRef: React.RefObject<boolean>;
+  setElementAttributes: React.Dispatch<React.SetStateAction<Attributes>>;
+}
+
+
+export type CanvasObjectScaling = {
+  options: (fabric.TEvent & { path: CustomFabricObject<fabric.Path> }) | any;
+  setElementAttributes: React.Dispatch<React.SetStateAction<Attributes>>;
+};
+
+
+export type RenderCanvas = {
+  fabricRef: React.MutableRefObject<fabric.Canvas | null>;
+  canvasObjects: any;
+  activeObjectRef: any;
+}
 
 export type Color = {
   r: number;
