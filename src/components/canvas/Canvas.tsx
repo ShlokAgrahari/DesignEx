@@ -17,7 +17,7 @@ import {
   XYWH,
 } from "@/types/types";
 import { nanoid } from "nanoid";
-import { LiveObject } from "@liveblocks/client";
+import { LiveObject, User } from "@liveblocks/client";
 import { useEffect, useState, useCallback } from "react";
 import ToolsBar from "../toolsbar/ToolsBar";
 import Path from "./Path";
@@ -26,10 +26,19 @@ import SelectionBox from "./SelectionBox";
 import useDeleteLayers from "@/hooks/useDeleteLayers";
 import SelectionTools from "./SelectionTools";
 import Sidebars from "../sidebars/Sidebars";
+import MultiplayerGuides from "./MultiplayerGuides";
 
 const MAX_LAYERS = 100;
 
-export default function Canvas() {
+export default function Canvas({
+  roomName,
+  roomId,
+  othersWithAccessToRoom,
+}: {
+  roomName: string;
+  roomId: string;
+  othersWithAccessToRoom: User[];
+}) {
    const room = useRoom();
 
   if (room == null) {
@@ -380,8 +389,14 @@ const updateSelectionNet = useMutation(
     },
     [layerIds],
   );
+
+
+   const onPointerLeave = useMutation(({ setMyPresence }) => {
+    setMyPresence({ cursor: null });
+  }, []);
+
   const onPointerMove=useMutation(
-    ({},e:React.PointerEvent)=>{
+    ({setMyPresence},e:React.PointerEvent)=>{
         const point=pointerEventToCanvasPoint(e,camera);
 
          if (canvasState.mode === CanvasMode.Pressing) {
@@ -407,7 +422,7 @@ const updateSelectionNet = useMutation(
       } else if (canvasState.mode === CanvasMode.Resizing) {
         resizeSelectedLayer(point);
       }
-      
+      setMyPresence({cursor:point});
     },
     [
       camera,
@@ -461,12 +476,14 @@ const updateSelectionNet = useMutation(
           <svg onWheel={onWheel} onPointerUp={onPointerUp}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
           className="w-full h-full">
             <g  style={{transform:`translate(${camera.x}px,${camera.y}px) scale(${camera.zoom})`}}>
               {layerIds?.map((layerId) => (
                 <LayerComponent key={layerId} id={layerId} onLayerPointerDown={onLayerPointerDown} />
               ))}
               <SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown}/>
+              <MultiplayerGuides/>
               {pencilDraft !== null && pencilDraft.length > 0 && (
                 <Path
                   x={0}
@@ -495,7 +512,9 @@ const updateSelectionNet = useMutation(
         canRedo={canRedo}
         canUndo={canUndo}/>
 
-        {/* <Sidebars leftIsMinimized={leftIsMinimized} setLeftIsMinimized={setLeftIsMinimized}/> */}
+        <Sidebars roomName={roomName}
+        roomId={roomId}
+        othersWithAccessToRoom={othersWithAccessToRoom} leftIsMinimized={leftIsMinimized} setLeftIsMinimized={setLeftIsMinimized}/>
         
     </div>
   );
