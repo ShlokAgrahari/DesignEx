@@ -3,14 +3,21 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Printer } from 'lucide-react';
 import axios from "axios";
+import { ChevronLeft ,ChevronRight} from 'lucide-react';
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
+import Sidebar from "@/components/Navbar/Sidebar";
+import Navbar from "@/components/Navbar/Navbar";
+
 import { createRoom } from "@/actions/rooms";
 import RoomsView from "@/components/dashboard/RoomsView";
 import RoomInvite from "@/models/RoomInvite";
 import Room from "@/models/room";
 import { getUserRooms } from "@/lib/getRooms";
+
 export default function Dashboard() {
   const { data: session } = useSession();
   const setUser = useAuthStore((state) => state.setUser);
@@ -85,15 +92,7 @@ export default function Dashboard() {
 
     
 
-  const handleLogout = async () => {
-    try {
-      await signOut({ redirect: false });
-      router.push("/login");
-    } catch (error: any) {
-      console.error("Logout error:", error.message);
-      toast.error("Logout failed.");
-    }
-  };
+  
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -138,53 +137,83 @@ export default function Dashboard() {
     window.open(mapsUrl, "_blank");
   };
 
+
+
+  // -------------------------------------------------------------------
+
+  const [current,setCurrent] = useState(0);
+  const slides = [
+    {image:"/carousel1.jpg", text:"Create eye-catching posters with powerful tools"},
+    {image:"/carousel2.jpg" ,text:"Design together, no matter where you are"},
+    {image:"/carousel3.png" ,text:"Craft unique, professional logos effortlessly"}
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 4000); 
+
+    return () => clearInterval(interval); 
+  }, [slides.length]);
+
+  let prevSlide = ()=>{
+    setCurrent((current-1 + slides.length)%slides.length);
+  }
+
+  let nextSlide = ()=>{
+    setCurrent((current+1)%slides.length);
+  }
+
+  const [expanded,setExpanded] = useState(true);
+ 
+
+  // ----------------------------------------------------------------------
+
+
   return (
-    <div className="flex h-screen w-screen font-[Poppins] bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden">
-      <div className="bg-white h-full w-[15%] p-5 flex flex-col items-center shadow-xl border-r border-gray-300">
-        <div className="relative w-full flex justify-center mb-8">
-          <img
-            src="/logo.png"
-            alt="DesignEx Logo"
-            className="w-20 h-20 rounded-full shadow-2xl border-4 border-black hover:scale-110 transition-transform duration-300"
-          />
-        </div>
-        <nav className="flex flex-col gap-4 w-full">
-          {["Home", "Templates", "My Designs", "My Teams", "Apps"].map(
-            (item) => (
-              <button
-                key={item}
-                className="bg-gradient-to-r from-purple-300 to-pink-300 text-white py-2 px-4 rounded-xl shadow-md hover:scale-105 transition-all duration-300"
-              >
-                {item}
+    <div className="flex h-screen w-screen font-[Poppins] bg-linear-to-t from-white to-violet-500 overflow-hidden ">
+      <Sidebar expanded={expanded} setExpanded={setExpanded} setJoin={setJoin}/>
+     
+        <div className={`flex-1 flex flex-col p-2 sm:p-6 overflow-y-auto scrollbar-hide overflow-auto ${expanded?"bg-white/30 backdrop-blur-lg blur-sm sm:blur-none":""}`}>
+          <Navbar/>
+
+          <div className="h-[300px] lg:h-[340px] w-full  rounded-sm relative items-center justify-center mb-6 overflow-hidden">
+            <div className={`flex transition ease-out duration-300 h-full `} style={{transform:`translateX(-${current*100}%)`}}>
+              {slides.map((s)=>{
+                return (<div className="h-full w-full bg-center bg-cover bg-no-repeat min-w-full relative" style={{backgroundImage:`url(${s.image})`}}>
+                    <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-sm max-w-[70%] md:max-w-[50%]">
+                      <h2 className="text-lg sm:text-2xl md:text-4xl font-bold">{s.text}</h2> 
+                    </div>
+                  </div>);
+              })}
+            </div>
+            <div className="absolute top-0 h-full w-full justify-between flex text-white px-2 sm:px-5 text-xl items-center">
+              <button onClick={prevSlide}>
+                <ChevronLeft/>
               </button>
-            )
-          )}
-
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white py-2 px-4 rounded-xl shadow-md hover:scale-105 transition-all duration-300 mt-4"
-          >
-            Logout
-          </button>
-        </nav>
-      </div>
-
-      <div className="flex-1 flex flex-col p-6 overflow-y-auto scrollbar-hide">
-        <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-4 flex items-center justify-between mb-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 py-2 w-[40%] rounded-md border border-gray-300 focus:ring-2 focus:ring-purple-500 shadow-sm text-sm"
-          />
-          <div className="flex gap-4">
-            <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
-              Settings
-            </button>
-            <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
-              Profile
-            </button>
+              <button onClick={nextSlide}>
+                <ChevronRight/>
+              </button>
+            </div>
           </div>
-        </div>
+
+
+          <div className="flex mb-6 w-full flex-col sm:flex-row rounded-md shadow-xl ">
+              <div className="bg-white w-full h-[160px] lg:h-[200px]  flex flex-col justify-center p-4 md:p-5 lg:p-7 sm:rounded-tl-md sm:rounded-bl-md">
+                <h2 className="text-2xl leading-6 md:text-3xl font-semibold text-[#de49eb] mb-1">Printing shop nearby you</h2>
+                <p className="text-md ">Easily locate trusted printing shops near you in just one click</p>
+              </div>
+              <div className="w-full h-[160px] lg:h-[200px] sm:rounded-tr-md sm:rounded-br-sm bg-no-repeat bg-cover bg-center"
+                style={{backgroundImage:`url("/printer.jpg")`}}>
+                <div className="flex items-center justify-center w-full h-full bg-black/50 rounded-md">
+                  <button
+                    className="px-3 py-2 bg-white rounded-md text-black flex hover:bg-[#de49eb] hover:text-white"
+                    >
+                      <Printer/><span className="ml-2">Printing Shop</span>
+                    </button>
+                </div>
+              </div>
+          </div>
 
         <div className="h-[30vh] w-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-white text-3xl font-bold shadow-lg mb-6">
           DesignEx Carousel
@@ -219,7 +248,8 @@ export default function Dashboard() {
 />
 
 
-        {joinForm && (
+
+          {joinForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
             <div className="bg-white p-8 rounded-xl shadow-2xl w-[90%] max-w-md">
               <h2 className="text-xl font-bold mb-4 text-gray-800">
@@ -252,7 +282,8 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-      </div>
+        </div>
+  
     </div>
   );
 }
