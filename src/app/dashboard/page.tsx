@@ -8,17 +8,47 @@ import axios from "axios";
 import { ChevronLeft ,ChevronRight} from 'lucide-react';
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
 import Sidebar from "@/components/Navbar/Sidebar";
 import Navbar from "@/components/Navbar/Navbar";
+
+import { createRoom } from "@/actions/rooms";
+import RoomsView from "@/components/dashboard/RoomsView";
+import RoomInvite from "@/models/RoomInvite";
+import Room from "@/models/room";
+import { getUserRooms } from "@/lib/getRooms";
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const setUser = useAuthStore((state) => state.setUser);
    
   const user = useAuthStore((state) => state.user);
+  const setOwnedRooms = useAuthStore((state) => state.setOwnedRooms);
+  const setRoomInvites = useAuthStore((state) => state.setRoomInvites);
+  const ownedRooms = useAuthStore((state) => state.ownedRooms);
+  const roomInvites = useAuthStore((state) => state.roomInvites);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await fetch("/api/rooms");
+        if (!res.ok) throw new Error("Failed to fetch rooms");
+        const data = await res.json();
+        console.log("room in dashboard",data);
+        setOwnedRooms(data.ownedRooms);
+        setRoomInvites(data.roomInvites);
+      } catch (err) {
+        console.error("Error fetching rooms:", err);
+      }
+    };
+
+    if (user?.id) {
+      fetchRooms();
+    }
+  }, [user?.id]);
   const [joinForm, setJoin] = useState(false);
   const [teamId, setTeamId] = useState("");
-
+   
 
   console.log("user ",user);
  
@@ -167,6 +197,7 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="flex mb-6 w-full flex-col sm:flex-row rounded-md shadow-xl ">
               <div className="bg-white w-full h-[160px] lg:h-[200px]  flex flex-col justify-center p-4 md:p-5 lg:p-7 sm:rounded-tl-md sm:rounded-bl-md">
                 <h2 className="text-2xl leading-6 md:text-3xl font-semibold text-[#de49eb] mb-1">Printing shop nearby you</h2>
@@ -183,6 +214,40 @@ export default function Dashboard() {
                 </div>
               </div>
           </div>
+
+        <div className="h-[30vh] w-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-white text-3xl font-bold shadow-lg mb-6">
+          DesignEx Carousel
+        </div>
+
+        <div className="flex flex-wrap gap-6 mb-6">
+          <button onClick={() => createRoom()} className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform">
+            Create a Design
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
+          >
+            Create a Team
+          </button>
+          <button
+            onClick={() => setJoin(true)}
+            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
+          >
+            Join a Team
+          </button>
+          <button
+            onClick={handleNearbyPrintShops}
+            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
+          >
+            Nearby Printing Shop
+          </button>
+        </div>
+        <RoomsView
+  ownedRooms={useAuthStore((s) => s.ownedRooms)}
+  roomInvites={useAuthStore((s) => s.roomInvites)}
+/>
+
+
 
           {joinForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">

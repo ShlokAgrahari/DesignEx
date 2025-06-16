@@ -1,5 +1,4 @@
 "use client";
-
 import { LiveList, LiveMap, LiveObject } from "@liveblocks/client";
 import {
   ClientSideSuspense,
@@ -9,7 +8,8 @@ import {
 import { ReactNode } from "react";
 import { Layer } from "@/types/types";
 
-export function Room({
+// Room.tsx
+export function LiveblocksRoomProvider({
   children,
   roomId,
 }: {
@@ -17,7 +17,7 @@ export function Room({
   roomId: string;
 }) {
   return (
-    <LiveblocksProvider  authEndpoint="/api/liveblocks-auth">
+    <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
       <RoomProvider
         id={roomId}
         initialPresence={{
