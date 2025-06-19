@@ -21,24 +21,28 @@ export default function Dashboard() {
   const ownedRooms = useAuthStore((state) => state.ownedRooms);
   const roomInvites = useAuthStore((state) => state.roomInvites);
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const res = await fetch("/api/rooms");
-        if (!res.ok) throw new Error("Failed to fetch rooms");
-        const data = await res.json();
-        console.log("room in dashboard",data);
-        setOwnedRooms(data.ownedRooms);
-        setRoomInvites(data.roomInvites);
-      } catch (err) {
-        console.error("Error fetching rooms:", err);
-      }
-    };
+ // ⬇️ Move it outside
+const fetchRooms = async () => {
+  try {
+    const res = await fetch("/api/rooms");
+    if (!res.ok) throw new Error("Failed to fetch rooms");
+    const data = await res.json();
+    console.log("room in dashboard", data);
+    setOwnedRooms(data.ownedRooms);
+    setRoomInvites(data.sharedRooms); // ✅ matches your return shape
 
-    if (user?.id) {
-      fetchRooms();
-    }
-  }, [user?.id]);
+  } catch (err) {
+    console.error("Error fetching rooms:", err);
+  }
+};
+
+// ⬇️ Then use it here
+useEffect(() => {
+  if (user?.id) {
+    fetchRooms();
+  }
+}, [user?.id]);
+
   const [joinForm, setJoin] = useState(false);
   const [teamId, setTeamId] = useState("");
    
@@ -100,10 +104,13 @@ export default function Dashboard() {
     if (!teamName || !projectName) return alert("Please fill all fields");
 
     try {
-      await axios.post("/api/createTeam", { teamName, projectName, user });
+      const res=await axios.post("/api/createTeam", { teamName, projectName, user });
+      const { redirectUrl } = res.data;
       setShowForm(false);
       setTeamName("");
       setProjectName("");
+      fetchRooms();
+      router.push(redirectUrl);
     } catch (error: any) {
       console.error(error);
     }
@@ -217,6 +224,48 @@ export default function Dashboard() {
   ownedRooms={useAuthStore((s) => s.ownedRooms)}
   roomInvites={useAuthStore((s) => s.roomInvites)}
 />
+
+       {showForm && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+    <div className="bg-white p-8 rounded-xl shadow-2xl w-[90%] max-w-md">
+      <h2 className="text-xl font-bold mb-4 text-gray-800">
+        Create a Team
+      </h2>
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Team Name"
+          value={teamName}
+          onChange={(e) => setTeamName(e.target.value)}
+          className="border border-gray-300 rounded-md px-3 py-2"
+        />
+        <input
+          type="text"
+          placeholder="Project Name"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
+          className="border border-gray-300 rounded-md px-3 py-2"
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
+          >
+            Cancel
+          </button>
+          <button
+                    type="submit"
+                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition"
+                  >
+                    Create
+                  </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
 
         {joinForm && (

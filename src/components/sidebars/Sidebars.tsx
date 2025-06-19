@@ -111,17 +111,22 @@ export default function Sidebars({
       {!leftIsMinimized ? (
         <div className="fixed left-0 flex h-screen w-[240px] flex-col border-r border-gray-200 bg-white">
           <div className="p-4">
-            <div className="flex justify-between">
-              <Link href="/dashboard">
-                <img
-                  src="/figma-logo.svg"
-                  alt="Figma logo"
-                  className="h-[18px w-[18px]"
-                />
-              </Link>
+            <div className="flex justify-between ">
+             <div className="flex items-center">
+  <Link href="/dashboard" className="flex items-center gap-2">
+    <img
+      src="/logo.png"
+      alt="DesignEx Logo"
+      className="w-10 h-10 rounded-full shadow-2xl border-2 border-black hover:scale-110 transition-transform duration-300"
+    />
+    <span className="font-semibold text-lg">DesignEx</span>
+  </Link>
+</div>
+
+              
               <PiSidebarSimpleThin
                 onClick={() => setLeftIsMinimized(true)}
-                className="h-5 w-5 cursor-pointer"
+                className=" mt-2  h-5 w-5 cursor-pointer"
               />
             </div>
             <h2 className="mt-2 scroll-m-20 text-[13px] font-medium">
@@ -228,10 +233,10 @@ export default function Sidebars({
 )}
 
             </div>
-            <ShareMenu
+            {/* <ShareMenu
               roomId={roomId}
               othersWithAccessToRoom={othersWithAccessToRoom}
-            />
+            /> */}
           </div>
           <div className="border-b border-gray-200"></div>
           {layer ? (

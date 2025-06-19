@@ -13,6 +13,7 @@ declare global {
       cursor: Point | null;
       penColor: Color | null;
       pencilDraft: [x: number, y: number, pressure: number][] | null;
+      message?:string;
     };
 
     // The Storage tree for the room, for useMutation, useStorage, etc.

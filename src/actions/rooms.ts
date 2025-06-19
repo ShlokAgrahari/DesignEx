@@ -70,23 +70,28 @@ export async function deleteRoom(id: string) {
 export async function shareRoom(id: string, inviteEmail: string) {
   const user =await getUserFromCookies();
   console.log("user shared",user);
-  const room = await Room.findOne({
-    _id: id,
-    ownerId: user.id,
-  });
-  console.log("room is in shared",room)
+  const room = await Room.findById(id); // just find by _id
+  console.log("room is in shared", room);
   if (!room) throw new Error("Room not found or unauthorized");
 
   const invitedUser = await User.findOne({ email: inviteEmail });
   console.log("invited user is",invitedUser)
   if (!invitedUser) return "User not found.";
   
+  const alreadyInvited = await RoomInvite.findOne({
+    roomId: room._id,
+    userId: invitedUser._id,
+  });
+
+  if (alreadyInvited) return "Already shared with this user.";
+
   await RoomInvite.create({
     roomId: room._id,
     userId: invitedUser._id,
   });
 
   console.log(RoomInvite);
+  return "Invite successful.";
 }
 
 export async function deleteInvitation(id: string, inviteEmail: string) {
