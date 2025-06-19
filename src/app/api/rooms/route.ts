@@ -16,7 +16,9 @@ export async function GET() {
     return NextResponse.json({ error: "User ID missing" }, { status: 400 });
   }
 
-  const { ownedRooms, roomInvites } = await getUserRooms(user.id);
+  const { ownedRooms, sharedRooms } = await getUserRooms(user.id);
 
-  return NextResponse.json({ ownedRooms, roomInvites });
+
+  return NextResponse.json({ ownedRooms, sharedRooms });
+
 }
