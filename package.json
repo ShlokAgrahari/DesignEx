@@ -63,14 +63,22 @@
     "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6739e0f0fdffdc631fd093d41892a84e4bccdcb3
     "@types/pusher-js": "^4.2.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
+<<<<<<< HEAD
 =======
     "@types/react": "^19.1.7",
     "@types/react-dom": "^19.1.6",
 >>>>>>> fb6a537df889731e596e1bae3299cd009eb358c3
+=======
+
+>>>>>>> 6739e0f0fdffdc631fd093d41892a84e4bccdcb3
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.0.38",
     "eslint": "^9",
