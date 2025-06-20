@@ -17,6 +17,7 @@ import RoomsView from "@/components/dashboard/RoomsView";
 import RoomInvite from "@/models/RoomInvite";
 import Room from "@/models/room";
 import { getUserRooms } from "@/lib/getRooms";
+import JoinForm from "@/components/Navbar/JoinForm";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -51,7 +52,7 @@ useEffect(() => {
 }, [user?.id]);
 
   const [joinForm, setJoin] = useState(false);
-  const [teamId, setTeamId] = useState("");
+  
    
 
   console.log("user ",user);
@@ -115,24 +116,7 @@ useEffect(() => {
     }
   };
 
-  const handleJoin = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!teamId) return alert("Please provide team ID");
-
-    try {
-      const res = await axios.post("/api/joinTeam", { teamId, user });
-      console.log("Joined team", res.data);
-      setTeamId("");
-      setJoin(false);
-    } catch (error: any) {
-      if (error.response?.status === 409) {
-        alert(error.response.data.message);
-        setTeamId("");
-        return;
-      }
-      console.log("Join error", error);
-    }
-  };
+  
 
   const handleNearbyPrintShops = () => {
     if (!userLocation) {
@@ -179,7 +163,7 @@ useEffect(() => {
 
   return (
     <div className="flex h-screen w-screen font-[Poppins] bg-linear-to-t from-white to-violet-500 overflow-hidden ">
-      <Sidebar expanded={expanded} setExpanded={setExpanded} setJoin={setJoin}/>
+      <Sidebar expanded={expanded} setExpanded={setExpanded} setJoin={setJoin} activeLabel="Home"/>
      
         <div className={`flex-1 flex flex-col p-2 sm:p-6 overflow-y-auto scrollbar-hide overflow-auto ${expanded?"bg-white/30 backdrop-blur-lg blur-sm sm:blur-none":""}`}>
           <Navbar/>
@@ -222,9 +206,6 @@ useEffect(() => {
               </div>
           </div>
 
-        <div className="h-[30vh] w-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-white text-3xl font-bold shadow-lg mb-6">
-          DesignEx Carousel
-        </div>
 
         <div className="flex flex-wrap gap-6 mb-6">
           <button onClick={() => createRoom()} className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform">
@@ -299,37 +280,7 @@ useEffect(() => {
 
 
           {joinForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-            <div className="bg-white p-8 rounded-xl shadow-2xl w-[90%] max-w-md">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
-                Join a Team
-              </h2>
-              <form onSubmit={handleJoin} className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="Team ID"
-                  value={teamId}
-                  onChange={(e) => setTeamId(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setJoin(false)}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition"
-                  >
-                    Join
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <JoinForm setJoin={setJoin} />
         )}
         </div>
   

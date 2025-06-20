@@ -8,11 +8,11 @@ import {
   LayoutGrid,
 } from 'lucide-react';
 import { ChevronFirst, ChevronLast } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const sidebarItems = [
   { label: 'Home', icon: Home },
   { label: 'Teams', icon: Users },
-  { label: 'Designs', icon: LayoutGrid },
   { label: 'CreateTea', icon: UserPlus },
   { label: 'JoinTeam', icon: Handshake },
   { label: 'NewDesign', icon: Brush },
@@ -22,10 +22,11 @@ interface SidebarProps {
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setJoin: React.Dispatch<React.SetStateAction<boolean>>;
+  activeLabel:string;
 }
 
-const Sidebar:React.FC<SidebarProps> = ({expanded,setExpanded,setJoin}) => {
-
+const Sidebar:React.FC<SidebarProps> = ({expanded,setExpanded,setJoin,activeLabel}) => {
+  const router = useRouter();
   return (
     <div className={`relative bg-white h-full shadow-[6px_0_12px_0_rgba(0,0,0,0.15)]  ${
         expanded ? "w-[15%] min-w-[150px] p-2 lg:p-3 xl:p-5 " : "sm:w-[70px] w-[65px] p-2 "
@@ -51,8 +52,10 @@ const Sidebar:React.FC<SidebarProps> = ({expanded,setExpanded,setJoin}) => {
                 key={label}
                 onClick={()=>{
                   if(label === "JoinTeam"){setJoin(true);}
+                  if(label === "Teams"){router.replace("/team");}
+                  if(label === "Home"){router.replace("/dashboard")}
                 }}
-                className={`bg-[#de49eb] text-white font-semibold ${expanded?"px-2 py-2":"px-2 py-2 rounded-xs"} shadow-lg flex items-center justify-center text-center 
+                className={`${(activeLabel === label) ?"bg-purple-500": "bg-[#de49eb]"} text-white font-semibold ${expanded?"px-2 py-2":"px-2 py-2 rounded-xs"} shadow-lg flex items-center justify-center text-center 
                 shadow-purple-500/50 hover:bg-purple-500 hover:border-2 transition-transform duration-300 ease-in-out hover:-translate-y-1`}
               >
                 <Icon className="w-5 h-5 font-bold" strokeWidth={2.5} />
