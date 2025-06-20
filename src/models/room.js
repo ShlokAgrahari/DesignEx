@@ -13,6 +13,11 @@ const roomSchema = new Schema(
       type: String,
       default: "Untitled",
     },
+    inTeam:{
+      type:Boolean,
+      default:false,
+      required:true,
+    },
     roomInvites: [
       {
         type: Types.ObjectId,

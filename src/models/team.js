@@ -15,6 +15,11 @@ const teamSchema = new Schema({
         type:String,
         required:true
     },
+    roomId:{
+        
+        type:String,
+        required:true
+    },
     leaderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

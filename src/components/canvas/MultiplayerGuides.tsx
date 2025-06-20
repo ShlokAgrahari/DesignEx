@@ -1,9 +1,9 @@
+// MultiplayerGuides.tsx
 import {
   shallow,
   useOthersConnectionIds,
   useOthersMapped,
 } from "@liveblocks/react";
-import { connection } from "next/server";
 import { memo } from "react";
 import Cursor from "./Cursor";
 import Path from "./Path";
@@ -11,6 +11,7 @@ import { colorToCss } from "@/helper/util";
 
 function Cursors() {
   const ids = useOthersConnectionIds();
+
   return (
     <>
       {ids.map((connectionId) => (
@@ -26,7 +27,7 @@ function Drafts() {
       pencilDraft: other.presence.pencilDraft,
       penColor: other.presence.penColor,
     }),
-    shallow,
+    shallow
   );
 
   return (

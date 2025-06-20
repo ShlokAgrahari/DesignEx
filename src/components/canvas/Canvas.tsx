@@ -1,6 +1,8 @@
 "use client";
+import { CursorMode, CursorState } from "@/types/types";
+import CursorChat from "./CursorChat";
 
-import { useCanRedo, useCanUndo, useHistory, useMutation, useMyPresence, useSelf, useStorage } from "@liveblocks/react";
+import { useCanRedo, useCanUndo, useHistory, useMutation, useMyPresence, useOthers, useSelf, useStorage } from "@liveblocks/react";
 import { colorToCss, findIntersectionLayersWithRectangle, penPointsToPathPayer, pointerEventToCanvasPoint, resizeBounds } from "@/helper/util";
 import LayerComponent from "./LayerComponent";
 import {
@@ -16,6 +18,7 @@ import {
   CanvasState,
   XYWH,
 } from "@/types/types";
+
 import { nanoid } from "nanoid";
 import { LiveObject, User } from "@liveblocks/client";
 import { useEffect, useState, useCallback } from "react";
@@ -27,6 +30,8 @@ import useDeleteLayers from "@/hooks/useDeleteLayers";
 import SelectionTools from "./SelectionTools";
 import Sidebars from "../sidebars/Sidebars";
 import MultiplayerGuides from "./MultiplayerGuides";
+
+
 
 const MAX_LAYERS = 100;
 
@@ -45,6 +50,8 @@ export default function Canvas({
     // not yet connected to Liveblocks
     return null;
   }
+  const others = useOthers();
+  const userCount = others.length;
   const roomColor = useStorage((root) => root.roomColor);
   const layerIds = useStorage((root) => root.layerIds);
   const layers = useStorage((root) => root.layers); // Needed to check if storage is ready
@@ -61,6 +68,11 @@ export default function Canvas({
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
   console.log(presence[0].selection);
+  const [cursorState, setCursorState] = useState<CursorState>({
+  mode: CursorMode.Hidden,
+});
+
+   const [{ cursor }, setMyPresence] = useMyPresence() as any;
 
   const selectAllLayers = useMutation(
     ({ setMyPresence }) => {
@@ -306,7 +318,49 @@ const insertPath = useMutation(({ storage, self, setMyPresence }) => {
   );
 
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+    // Ignore if typing in an input or textarea
+    if (
+      (e.target as HTMLElement)?.tagName === "INPUT" ||
+      (e.target as HTMLElement)?.tagName === "TEXTAREA"
+    ) {
+      return;
+    }
+  }
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "/") {
+        console.log("chat triggered");
+        setCursorState({
+          mode: CursorMode.Chat,
+          previousMessage: null,
+          message: "",
+        });
+        console.log("done");
+      } else if (e.key === "Escape") {
+        setMyPresence({ message: "" });
+        setCursorState({ mode: CursorMode.Hidden });
+      } 
+    };
+
+    // const onKeyDown = (e: KeyboardEvent) => {
+    //   if (e.key === "/") {
+    //     e.preventDefault();
+    //   }
+    // };
+
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [setMyPresence,setCursorState]);
+
+  // Listen to mouse events to change the cursor state
   
+
 
 
   const onPointerDown = useMutation(
@@ -393,6 +447,7 @@ const updateSelectionNet = useMutation(
 
    const onPointerLeave = useMutation(({ setMyPresence }) => {
     setMyPresence({ cursor: null });
+    setCursorState({mode:CursorMode.Hidden})
   }, []);
 
   const onPointerMove=useMutation(
@@ -411,8 +466,8 @@ const updateSelectionNet = useMutation(
         const deltaY = e.movementY;
 
         setCamera((camera) => ({
-          x: camera.x + deltaX,
-          y: camera.y + deltaY,
+          x: e.clientX-e.currentTarget.getBoundingClientRect().x,
+          y: e.clientY - e.currentTarget.getBoundingClientRect().y,
           zoom: camera.zoom,
         }));
       } else if (canvasState.mode === CanvasMode.Translating) {
@@ -464,8 +519,22 @@ const updateSelectionNet = useMutation(
   );
 
   return (
+    
     <div className="flex h-screen w-full">
+      {/* <div>There are {userCount} other user(s) online</div>; */}
       <main className="fixed left-0 right-0 h-screen overflow-y-auto">
+      {cursor && (
+        <CursorChat
+        cursor={cursor}
+        cursorState={cursorState}
+        setCursorState={setCursorState}
+        updateMyPresence={setMyPresence}/>
+      )}
+
+
+
+
+        {/* <div>There are {userCount} other user(s) online</div>; */}
         <div
           style={{
             backgroundColor: roomColor ? colorToCss(roomColor) : "#1e1e1e",
