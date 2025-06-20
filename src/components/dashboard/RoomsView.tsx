@@ -13,6 +13,8 @@ export default function RoomsView({
   ownedRooms: any[];
   roomInvites: any[];
 }){
+  const [localOwnedRooms, setLocalOwnedRooms] = useState(ownedRooms);
+const [localRoomInvites, setLocalRoomInvites] = useState(roomInvites);
 
    const [viewMode,setViewMode]=useState("owns");
    const [selected, setSelected] = useState<string | null>(null);
@@ -33,13 +35,13 @@ export default function RoomsView({
   
 console.log("rooms view",roomInvites)
   const filteredRooms = useMemo(() => {
-    if (viewMode === "owns") {
-      return ownedRooms;
-    } else if (viewMode === "shared") {
-      return roomInvites;
-    }
-    return [];
-  }, [viewMode, ownedRooms, roomInvites]);
+  if (viewMode === "owns") {
+    return localOwnedRooms;
+  } else if (viewMode === "shared") {
+    return localRoomInvites;
+  }
+  return [];
+}, [viewMode, localOwnedRooms, localRoomInvites]);
 
 
   const roomColors = useMemo(() => {
@@ -68,16 +70,23 @@ console.log("rooms view",roomInvites)
 
   const handleTitleUpdate = (roomId: string, newTitle: string) => {
   if (viewMode === "owns") {
-    const updated = ownedRooms.map((room) =>
-      room._id === roomId ? { ...room, title: newTitle } : room
+    setLocalOwnedRooms(prevRooms =>
+      prevRooms.map(room =>
+        room._id === roomId ? { ...room, title: newTitle } : room
+      )
     );
-    // Force rerender by mutating state
-    setViewMode(""); // temporarily change
-    setTimeout(() => setViewMode("owns"), 0);
   }
 };
+useEffect(() => {
+  setLocalOwnedRooms(ownedRooms);
+}, [ownedRooms]);
 
+useEffect(() => {
+  setLocalRoomInvites(roomInvites);
+}, [roomInvites]);
 
+  console.log("owned rooms are",ownedRooms);
+  console.log("shared rooms are",filteredRooms);
    console.log(filteredRooms,viewMode,ownedRooms);
     return (
   <div  ref={outerDivRef} className="flex flex-col gap-5">
@@ -96,33 +105,34 @@ console.log("rooms view",roomInvites)
    
    <div className="flex flex-wrap gap-4">
     {filteredRooms.map((room) => {
-      const isShared = viewMode === "shared";
+  const roomData = room;
 
-  const roomData = isShared ? room.roomId : room;
+  if (!roomData || !roomData._id) return null;
 
-  if (!roomData || !roomData._id) return;
+  const roomColor =
+    roomColors.find((rc) => rc.id === roomData._id)?.color ?? PASTEL_COLORS[0];
 
+  return (
+    <SingleRoom
+      key={roomData._id}
+      id={roomData._id}
+      title={roomData.title}
+      description={`Created ${
+        roomData.createdAt?.toDate?.().toDateString?.() ??
+        new Date(roomData.createdAt).toDateString?.() ??
+        "Unknown"
+      }`}
+      color={roomColor}
+      selected={selected === roomData._id}
+      select={() => setSelected(roomData._id)}
+      navigateTo={() => router.push("/dashboard/" + roomData._id)}
+      canEdit={viewMode === "owns"}
+      mode={viewMode}
+      onTitleUpdate={handleTitleUpdate}
+    />
+  );
+})}
 
-          const roomColor =
-            roomColors.find((rc) => rc.id === room.id)?.color ??
-            PASTEL_COLORS[0]!;
-
-          return (
-            <SingleRoom
-  key={roomData._id}
-  id={roomData._id}
-  title={roomData.title}
-  description={`Created ${roomData.createdAt?.toDate?.().toDateString?.() ?? new Date(roomData.createdAt).toDateString?.() ?? "Unknown"}`}
-  color={roomColor}
-  selected={selected === roomData._id}
-  select={() => setSelected(roomData._id)}
-  navigateTo={() => router.push("/dashboard/" + roomData._id)}
-  canEdit={viewMode === "owns"}
-  onTitleUpdate={handleTitleUpdate}
-/>
-
-          );
-        })}
    </div>
 
 
@@ -141,6 +151,7 @@ function SingleRoom({
   select,
   navigateTo,
   canEdit,
+  mode,
   onTitleUpdate
 }: {
   id: string;
@@ -151,6 +162,7 @@ function SingleRoom({
   select: () => void;
   navigateTo: () => void;
   canEdit: boolean;
+  mode:string;
   onTitleUpdate: (id: string, newTitle: string) => void;
 
 }) {
@@ -182,7 +194,7 @@ function SingleRoom({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Backspace" && selected && !isEditing) {
+      if (e.key === "Backspace" && selected && !isEditing && mode==="owns") {
         e.preventDefault();
         setShowConfirmationModal(true);
       }
@@ -216,12 +228,16 @@ function SingleRoom({
           className="w-full"
         />
       ) : (
-        <p
+        <div>
+          <p
           onClick={() => setIsEditing(true)}
           className="mt-2 select-none text-[13px] font-medium"
         >
           {title}
         </p>
+        
+        </div>
+        
       )}
       <p className="select-none text-[10px] text-gray-400">{description}</p>
       <ConfirmModal

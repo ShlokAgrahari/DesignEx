@@ -36,10 +36,10 @@ export function LiveblocksRoomProvider({
           fallback={
             <div className="flex h-screen flex-col items-center justify-center gap-2">
               <img
-                src="/figma-logo.svg"
-                alt="Figma logo"
-                className="h-[50px] w-[50px] animate-bounce"
-              />
+            src="/logo.png"
+            alt="DesignEx Logo"
+            className="w-20 h-20 rounded-full shadow-2xl border-4 border-black hover:scale-110 transition-transform duration-300"
+          />
               <h1 className="text-sm font-normal">Loading</h1>
             </div>
           }
