@@ -9,33 +9,29 @@ import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
-
 export default function SignIn() {
   const router = useRouter();
   const { data: session } = useSession();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [buttonDisabled, setButtonDisabled] = useState(true);
- 
+
   useEffect(() => {
     setButtonDisabled(!(formData.email && formData.password));
   }, [formData]);
 
   const onSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    console.log("user on signin",formData);
+
+    console.log("user on signin", formData);
     const res = await signIn("credentials", {
       redirect: false,
       email: formData.email,
       password: formData.password,
     });
 
-    
-
     if (res?.ok) {
       toast.success("Signed in successfully!");
 
-      
       router.push("/dashboard");
     } else {
       toast.error("Invalid credentials. Try again.");

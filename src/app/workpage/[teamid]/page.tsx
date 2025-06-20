@@ -1,4 +1,5 @@
 "use client";
+
 import { useAuthStore } from "@/store/useAuthStore";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useParams, useRouter } from "next/navigation";
@@ -8,148 +9,87 @@ import axios from "axios";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
-
 export default function WorkPage() {
   const params = useParams();
   const teamId = params.teamid;
-  console.log("team id is ",teamId);
+  console.log("team id is ", teamId);
   const user = useAuthStore((state) => state.user);
   const router = useRouter();
   const client = useStreamVideoClient();
-  const [value,setvalue] = useState({
-    Datetime:new Date(),
-    description:"",
-    link:""
-  })
-  const [callDetails,setcallDetails] = useState<Call>()
-  const [TeamData,setTeamData] = useState(null);
-  const [isLeader,setisLeader] = useState(false);
+  const [value, setvalue] = useState({
+    Datetime: new Date(),
+    description: "",
+    link: "",
+  });
+  const [callDetails, setcallDetails] = useState<Call>();
+  const [TeamData, setTeamData] = useState(null);
+  const [isLeader, setisLeader] = useState(false);
 
-
-  useEffect(()=>{
-    const getData = async() => {
-        try {
-            const response = await axios.get("/api/get-team",{
-                params:{
-                    team_id:teamId
-                }
-            });
-            const result = response.data;
-            console.log(result.data);
-            if(result.success){
-                setTeamData(result.data);
-                const Data = result.data;
-                if(Data.leaderId == user?.id){
-                    setisLeader(true);
-                }
-            }
-        } catch (error) {
-            console.log("error while getting team data");
-        }
-    };
-    getData();
-  },[])
-
-
-
-
-
-
-
- //------------- function to create meeting --------------------------
-
-//   const createMeeting = async()=>{
-//     if(!client || !user){
-//         return;
-//     }
-//     try {
-//         const id = crypto.randomUUID();
-//         const call = client.call("default",id);
-
-//         if(!call){
-//             throw new Error("falied to create meeting");
-//         }
-
-//         const startAt = value.Datetime.toISOString() || new Date(Date.now()).toISOString();
-//         const description = value.description || "instant meeting";
-
-//         await call.getOrCreate({
-//             data:{
-//                 starts_at:startAt,
-//                 custom:{
-//                     description
-//                 }
-//             }
-//         });
-
-//         setcallDetails(call);
-//         if(!value.description){
-//             router.replace(`/meeting/${call.id}`);
-//         }
-//     } catch (error) {
-//         console.log("meeting error ",error);
-//     }
-// }
-
-
-
-////------------------ create personal meeting room, code ------------------
-
-
-
-const meetingId = teamId?.toString();
-const {call} = useGetCallById(meetingId!);
-const createPersonalMeeting = async()=>{
-  if(!client || !user){
-    return;
-  }
-  const newcall = client.call('default',meetingId!);
-  if(!call){
-    await newcall.getOrCreate({
-      data:{
-        starts_at:new Date().toISOString(),
-      }
-    })
-  }
-  router.replace(`/meeting/${meetingId}?personal=true`)
-}
-
-
-// -----------------function to join meeing --------------
-
-
-
-
- const meetId = teamId?.toString();
-
-
- const joinMeeting = async()=>{
-     if(!client || !meetId){
-         return;
-     }
-     try {
-         const response = await axios.get("/api/meeting-status", {
-            params: {
-               team_id:teamId,
-            },
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await axios.get("/api/get-team", {
+          params: {
+            team_id: teamId,
+          },
         });
         const result = response.data;
-        console.log(result);
-        const status = result.activeStatus;
-        if(!status){
-            console.log("no meeting");
-            toast.dark("No Meeting exists now");
+        console.log(result.data);
+        if (result.success) {
+          setTeamData(result.data);
+          const Data = result.data;
+          if (Data.leaderId == user?.id) {
+            setisLeader(true);
+          }
         }
-        else{
-            router.replace(`/meeting/${meetId}`);
-        }
+      } catch (error) {
+        console.log("error while getting team data");
+      }
+    };
+    getData();
+  }, []);
+
+  const meetingId = teamId?.toString();
+  const { call } = useGetCallById(meetingId!);
+
+  const createPersonalMeeting = async () => {
+    if (!client || !user) {
+      return;
+    }
+    const newcall = client.call("default", meetingId!);
+    if (!call) {
+      await newcall.getOrCreate({
+        data: {
+          starts_at: new Date().toISOString(),
+        },
+      });
+    }
+    router.replace(`/meeting/${meetingId}?personal=true`);
+  };
+
+  const joinMeeting = async () => {
+    if (!client || !meetingId) {
+      return;
+    }
+    try {
+      const response = await axios.get("/api/meeting-status", {
+        params: {
+          team_id: teamId,
+        },
+      });
+      const result = response.data;
+      console.log(result);
+      const status = result.activeStatus;
+      if (!status) {
+        console.log("no meeting");
+        toast.dark("No Meeting exists now");
+      } else {
+        router.replace(`/meeting/${meetingId}`);
+      }
     } catch (error) {
-        console.log("joining meeting error is",error);
-    }       
- }
-
-
-
+      console.log("joining meeting error is", error);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-black text-white">
@@ -165,21 +105,28 @@ const createPersonalMeeting = async()=>{
           <a href="#">my teams</a>
           <a href="#">apps</a>
         </nav>
+        <button
+          className="mt-10 border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition"
+          onClick={() => router.push(`/teamchat/${teamId}`)}
+        >
+          Open Chat
+        </button>
       </div>
+
       <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable
-              pauseOnHover={false}
-              theme="colored"
-              transition={Zoom}
-            />
-      
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover={false}
+        theme="colored"
+        transition={Zoom}
+      />
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col p-6">
         {/* Header */}
@@ -189,8 +136,11 @@ const createPersonalMeeting = async()=>{
             <p className="text-sm text-gray-300">team leader</p>
             <p className="text-sm text-gray-300">team code</p>
           </div>
-          <button className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition" onClick={isLeader? createPersonalMeeting : joinMeeting}>
-            {isLeader? "Start VC":"join VC"}
+          <button
+            className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition"
+            onClick={isLeader ? createPersonalMeeting : joinMeeting}
+          >
+            {isLeader ? "Start VC" : "join VC"}
           </button>
         </div>
 
@@ -217,7 +167,7 @@ const createPersonalMeeting = async()=>{
     </div>
   );
 }
-function async() {
-    throw new Error("Function not implemented.");
-}
 
+function async() {
+  throw new Error("Function not implemented.");
+}

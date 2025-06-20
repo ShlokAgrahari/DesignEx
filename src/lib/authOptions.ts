@@ -1,15 +1,13 @@
-import NextAuth from "next-auth";
+// lib/authOptions.ts
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { connect } from "@/dbConfig/db";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
-import { useAuthStore } from "@/store/useAuthStore";
-import { authOptions } from "@/lib/authOptions";
-connect(); // Initial DB connection
+import { NextAuthOptions } from "next-auth";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -22,11 +20,10 @@ const handler = NextAuth({
           email: string;
           password: string;
         };
-        console.log("user on backend signin", credentials);
+
         await connect();
         const user = await User.findOne({ email });
         if (!user) throw new Error("No user found");
-        console.log("user from nextauth", user);
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) throw new Error("Invalid password");
 
@@ -46,42 +43,32 @@ const handler = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
-
   pages: {
     signIn: "/login",
   },
-
   session: {
     strategy: "jwt",
   },
-
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google" || account?.provider === "github") {
-        try {
-          await connect();
-          const existingUser = await User.findOne({ email: user.email });
-          console.log("exsisting user", existingUser);
-          if (!existingUser) {
-            const newUser = new User({
-              username: user.name,
-              email: user.email,
-              provider: account.provider,
-              isVerified: true,
-            });
-            await newUser.save();
-            user.id = newUser._id;
-          } else {
-            user.id = existingUser._id;
-          }
-        } catch (error) {
-          console.error("OAuth signIn error:", error);
-          return false;
+        await connect();
+        const existingUser = await User.findOne({ email: user.email });
+        if (!existingUser) {
+          const newUser = new User({
+            username: user.name,
+            email: user.email,
+            provider: account.provider,
+            isVerified: true,
+          });
+          await newUser.save();
+          user.id = newUser._id;
+        } else {
+          user.id = existingUser._id;
         }
       }
       return true;
     },
-
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -90,7 +77,6 @@ const handler = NextAuth({
       }
       return token;
     },
-
     async session({ session, token }) {
       if (token?.id) {
         session.user = {
@@ -102,8 +88,5 @@ const handler = NextAuth({
       return session;
     },
   },
-
   secret: process.env.NEXTAUTH_SECRET,
-});
-
-export { handler as GET, handler as POST };
+};
