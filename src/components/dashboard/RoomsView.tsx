@@ -127,6 +127,7 @@ useEffect(() => {
       select={() => setSelected(roomData._id)}
       navigateTo={() => router.push("/dashboard/" + roomData._id)}
       canEdit={viewMode === "owns"}
+      mode={viewMode}
       onTitleUpdate={handleTitleUpdate}
     />
   );
@@ -150,6 +151,7 @@ function SingleRoom({
   select,
   navigateTo,
   canEdit,
+  mode,
   onTitleUpdate
 }: {
   id: string;
@@ -160,6 +162,7 @@ function SingleRoom({
   select: () => void;
   navigateTo: () => void;
   canEdit: boolean;
+  mode:string;
   onTitleUpdate: (id: string, newTitle: string) => void;
 
 }) {
@@ -191,7 +194,7 @@ function SingleRoom({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Backspace" && selected && !isEditing) {
+      if (e.key === "Backspace" && selected && !isEditing && mode==="owns") {
         e.preventDefault();
         setShowConfirmationModal(true);
       }
@@ -225,12 +228,16 @@ function SingleRoom({
           className="w-full"
         />
       ) : (
-        <p
+        <div>
+          <p
           onClick={() => setIsEditing(true)}
           className="mt-2 select-none text-[13px] font-medium"
         >
           {title}
         </p>
+        
+        </div>
+        
       )}
       <p className="select-none text-[10px] text-gray-400">{description}</p>
       <ConfirmModal
