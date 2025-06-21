@@ -1,7 +1,11 @@
 "use client";
 import { CursorMode, CursorState } from "@/types/types";
 import CursorChat from "./CursorChat";
+<<<<<<< HEAD
 
+=======
+import html2canvas from 'html2canvas';
+>>>>>>> 1e93cf17698510fa93d1da4a9f83a02f0a6c1313
 import { useCanRedo, useCanUndo, useHistory, useMutation, useMyPresence, useOthers, useSelf, useStorage } from "@liveblocks/react";
 import { colorToCss, findIntersectionLayersWithRectangle, penPointsToPathPayer, pointerEventToCanvasPoint, resizeBounds } from "@/helper/util";
 import LayerComponent from "./LayerComponent";
@@ -119,6 +123,9 @@ export default function Canvas({
   },[])
 
 
+
+
+
 const onResizeHandlePointerDown = useCallback(
     (corner: Side, initialBounds: XYWH) => {
       history.pause();
@@ -130,6 +137,7 @@ const onResizeHandlePointerDown = useCallback(
     },
     [history],
   );
+
 
 
 
@@ -523,13 +531,21 @@ const updateSelectionNet = useMutation(
     <div className="flex h-screen w-full">
       {/* <div>There are {userCount} other user(s) online</div>; */}
       <main className="fixed left-0 right-0 h-screen overflow-y-auto">
+<<<<<<< HEAD
       {cursor && (
+=======
+      {/* {cursor && (
+>>>>>>> 1e93cf17698510fa93d1da4a9f83a02f0a6c1313
         <CursorChat
         cursor={cursor}
         cursorState={cursorState}
         setCursorState={setCursorState}
         updateMyPresence={setMyPresence}/>
+<<<<<<< HEAD
       )}
+=======
+      )} */}
+>>>>>>> 1e93cf17698510fa93d1da4a9f83a02f0a6c1313
 
 
 
@@ -542,7 +558,8 @@ const updateSelectionNet = useMutation(
           className="h-full w-full touch-none"
         >
           <SelectionTools camera={camera} canvasMode={canvasState.mode}/>
-          <svg onWheel={onWheel} onPointerUp={onPointerUp}
+          <div id="canvas-capture" className="w-full h-full">
+            <svg onWheel={onWheel} onPointerUp={onPointerUp}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerLeave={onPointerLeave}
@@ -564,6 +581,8 @@ const updateSelectionNet = useMutation(
               )}
             </g>
           </svg>
+          </div>
+          
         </div>
       </main>
       <ToolsBar canvasState={canvasState}
@@ -580,6 +599,8 @@ const updateSelectionNet = useMutation(
         undo={() => history.undo()}
         canRedo={canRedo}
         canUndo={canUndo}/>
+       
+
 
         <Sidebars roomName={roomName}
         roomId={roomId}
