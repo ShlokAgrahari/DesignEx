@@ -16,6 +16,7 @@ import { RiRoundedCorner } from "react-icons/ri";
 import { BsCircleHalf } from "react-icons/bs";
 import { User } from "next-auth";
 import ShareMenu from "./ShareMenu";
+import html2canvas from 'html2canvas';
 export default function Sidebars({
   roomName,
   roomId,
