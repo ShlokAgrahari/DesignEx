@@ -17,7 +17,7 @@ export const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
     const initClient = async () => {
       if (!user?.id) {
         console.log("Waiting for user...");
-        return;
+        return ({children});
       }
       console.log("Auth user in StreamVideoProvider:", user);
 

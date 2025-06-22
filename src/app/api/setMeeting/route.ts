@@ -16,7 +16,7 @@ export async function POST(request:Request){
         }
 
         team.isActive = !team.isActive;
-        await team.save();
+        await team.save({ validateBeforeSave: false });
         return Response.json({
             success:true,
             message:"completed successfully",

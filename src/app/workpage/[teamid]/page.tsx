@@ -8,8 +8,16 @@ import { useGetCallById } from "@/hooks/useGetCallById";
 import axios from "axios";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { StreamVideoProvider } from "@/providers/StreamClientProvider";
 
-export default function WorkPage() {
+
+export default function WorkPage(){
+  return (<StreamVideoProvider>
+    <InnerWorkPage/>
+  </StreamVideoProvider>)
+}
+
+function InnerWorkPage() {
   const params = useParams();
   const teamId = params.teamid;
   console.log("team id is ", teamId);
@@ -92,6 +100,7 @@ export default function WorkPage() {
   };
 
   return (
+  
     <div className="flex h-screen bg-black text-white">
       {/* Sidebar */}
       <div className="w-60 bg-[#111] flex flex-col items-center py-6 border-r border-white">
@@ -165,6 +174,7 @@ export default function WorkPage() {
         </div>
       </div>
     </div>
+
   );
 }
 

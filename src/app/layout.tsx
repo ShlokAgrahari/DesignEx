@@ -42,14 +42,16 @@ export default function RootLayout({
         </LoadingProvider> */}
         <LoadingProvider>
               <LoadingOverlay />
-        <AuthProvider>
-          <StreamVideoProvider>
-                {children}
-          </StreamVideoProvider>
+                <AuthProvider>
+        
+      {/* <           StreamVideoProvider> */}
+                    {children}
+                  {/* </StreamVideoProvider> */}
+           
         
           
           
-        </AuthProvider>
+          </AuthProvider>
         </LoadingProvider>
        
         

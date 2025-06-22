@@ -6,10 +6,23 @@ import MeetingSetup from '@/components/MeetingSetup';
 import  {useGetCallById}  from '@/hooks/useGetCallById';
 import Loader from '@/components/ui/Loader';
 import { useAuthStore } from '@/store/useAuthStore';
+import { StreamVideoProvider } from '@/providers/StreamClientProvider';
+import { useParams } from 'next/navigation';
 
-const meeting = ({params}:{params:Promise<{id:string}>}) => {
+export default function meeting(){
+  return(<StreamVideoProvider>
+    <InnerMeeting/>
+  </StreamVideoProvider>);
+}
+
+
+
+function InnerMeeting (){
   const user = useAuthStore((state)=>state.user);
-  const { id } = use(params);
+  // const { id } = use(params);
+   const params = useParams();
+  const id = params.id as string; 
+  console.log("id is",id);
   const [isSetupComplete,setisSetupComplete] = useState(false);
 
   const {call ,isCallLoading} = useGetCallById(id);
@@ -19,6 +32,7 @@ const meeting = ({params}:{params:Promise<{id:string}>}) => {
   }
 
   return (
+    
     <main>
       <StreamCall call={call}>
         <StreamTheme>
@@ -30,7 +44,7 @@ const meeting = ({params}:{params:Promise<{id:string}>}) => {
         </StreamTheme>
       </StreamCall>
     </main>
+
   )
 }
 
-export default meeting;
