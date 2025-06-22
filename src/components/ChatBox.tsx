@@ -6,16 +6,24 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import moment from "moment";
 import { FaPaperclip } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function ChatBox({ chatId }: { chatId: string }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!chatId) return;
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !chatId) return;
 
     const fetchMessages = async () => {
       const res = await axios.get(`/api/messages/${chatId}`);
@@ -33,7 +41,7 @@ export default function ChatBox({ chatId }: { chatId: string }) {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [chatId]);
+  }, [chatId, status]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -61,9 +69,14 @@ export default function ChatBox({ chatId }: { chatId: string }) {
     }
   };
 
+  if (status === "loading")
+    return <div className="text-white">Loading chat...</div>;
+
   return (
     <div className="flex flex-col h-screen border border-black rounded-md overflow-hidden bg-[#e5ddd5]">
-      <div className="bg-[#075e54] text-white px-6 py-2 text-lg font-semibold" />
+      <div className="bg-[#075e54] text-white px-6 py-2 text-lg font-semibold">
+        Team Chat
+      </div>
 
       <div
         className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
