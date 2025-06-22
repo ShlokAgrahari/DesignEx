@@ -6,16 +6,16 @@ export async function GET(req: NextRequest) {
   try {
     await connect();
 
-    const teamId = req.nextUrl.searchParams.get("team_id");
+    const _id = req.nextUrl.searchParams.get("team_id");
 
-    if (!teamId) {
+    if (!_id) {
       return Response.json(
         { success: false, message: "team_id is required" },
         { status: 400 }
       );
     }
 
-    const data = await Team.findOne({ teamId: teamId });
+    const data = await Team.findOne({ _id });
 
     if (!data) {
       return Response.json(

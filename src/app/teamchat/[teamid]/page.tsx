@@ -22,8 +22,8 @@ export default function TeamChatPage() {
   if (status === "loading" || !canRender) return <div>Loading chat...</div>;
 
   return (
-    <div className="h-screen bg-black text-white p-4">
-      <h1 className="text-xl font-bold mb-4">Team Chat Room</h1>
+    <div className="h-screen bg-black text-white ">
+      
       <ChatBox chatId={teamid as string} />
     </div>
   );

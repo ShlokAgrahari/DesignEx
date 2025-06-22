@@ -15,21 +15,35 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   const [newMessage, setNewMessage] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [teamName,setTeamName]=useState("");
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
+const fetchTeam = async () => {
+  try {
+    const response = await axios.get("/api/get-team", {
+              params: { team_id: chatId },
+            });
+            const result = response.data;
+            console.log("result from get-team:", result); 
+            console.log(result.team?.teamName);
+    setTeamName(result.team?.teamName); 
+  } catch (error) {
+    console.error("Error fetching team:", error);
+  }
+};
 
   useEffect(() => {
     if (status !== "authenticated" || !chatId) return;
-
+    console.log("team is",chatId);
     const fetchMessages = async () => {
       const res = await axios.get(`/api/messages/${chatId}`);
       setMessages(res.data);
     };
-
+    fetchTeam();
     fetchMessages();
 
     const channel = pusherClient.subscribe(chatId);
@@ -48,17 +62,34 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim() && !imageFile) return;
+  if (!newMessage.trim() && !imageFile) return;
 
-    const formData = new FormData();
-    formData.append("receiverId", chatId);
-    if (newMessage) formData.append("content", newMessage);
-    if (imageFile) formData.append("image", imageFile);
+  const formData = new FormData();
+  console.log(formData);
+  formData.append("receiverId", chatId);
+  if (newMessage) formData.append("content", newMessage);
+  if (imageFile){
+    console.log(imageFile);
+formData.append("image", imageFile);
+  } 
 
-    await axios.post("/api/messages/send", formData);
+  try {
+    const res = await axios.post("/api/messages/send", formData);
+
+    if (res.data?.message) {
+      // Add message instantly
+      setMessages((prev) => [...prev, res.data.message]);
+    }
+
+    
     setNewMessage("");
-    setImageFile(null);
-  };
+setImageFile(null);
+setImagePreview(null); // 👈 this line resets the preview
+
+  } catch (err) {
+    console.error("Send error:", err);
+  }
+};
 
   const deleteMessage = async (id: string) => {
     try {
@@ -75,7 +106,7 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   return (
     <div className="flex flex-col h-screen border border-black rounded-md overflow-hidden bg-[#e5ddd5]">
       <div className="bg-[#075e54] text-white px-6 py-2 text-lg font-semibold">
-        Team Chat
+        {teamName}
       </div>
 
       <div
@@ -132,6 +163,29 @@ export default function ChatBox({ chatId }: { chatId: string }) {
         })}
         <div ref={scrollRef}></div>
       </div>
+{imagePreview && (
+  <div className="px-4 pb-2 inline-block">
+    <div className="flex justify-start">
+      <div className="relative w-fit border rounded-lg shadow-md bg-white">
+        <img
+          src={imagePreview}
+          alt="Selected preview"
+          className="rounded-lg max-h-48 object-cover"
+        />
+        <button
+          onClick={() => {
+            setImageFile(null);
+            setImagePreview(null);
+          }}
+          className="absolute top-1 right-1 bg-white bg-opacity-90 text-red-500 rounded-full p-1 hover:bg-opacity-100 transition"
+          title="Remove image"
+        >
+          ✖
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <div className="bg-white px-4 py-3 flex gap-2 items-center border-t border-gray-300">
         <label
@@ -140,13 +194,27 @@ export default function ChatBox({ chatId }: { chatId: string }) {
         >
           <FaPaperclip size={20} />
         </label>
+        
+
+
         <input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-          className="hidden"
-        />
+  id="image-upload"
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    } else {
+      setImageFile(null);
+      setImagePreview(null);
+    }
+  }}
+  className="hidden"
+/>
+
         <input
           type="text"
           className="flex-1 px-4 py-2 rounded-full border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-400"
