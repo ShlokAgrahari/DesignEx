@@ -20,9 +20,17 @@ export const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
     console.log("✅ Zustand user before init:", user);
 
     const initClient = async () => {
+
+      if (!user?.id) {
+        console.log("Waiting for user...");
+        return ({children});
+      }
+      console.log("Auth user in StreamVideoProvider:", user);
+
       console.log("user from Zustand", user);
 
       if (!user?.id || initialized.current) return;
+
 
       initialized.current = true; // ✅ only once
       try {

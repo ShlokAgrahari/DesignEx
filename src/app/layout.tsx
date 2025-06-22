@@ -31,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
+
         {
           <LoadingProvider>
             <LoadingOverlay />
@@ -39,6 +40,7 @@ export default function RootLayout({
             </AuthProvider>
           </LoadingProvider>
         }
+
       </body>
     </html>
   );

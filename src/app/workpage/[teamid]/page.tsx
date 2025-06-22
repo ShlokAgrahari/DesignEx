@@ -8,6 +8,7 @@ import { useGetCallById } from "@/hooks/useGetCallById";
 import axios from "axios";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { StreamVideoProvider } from "@/providers/StreamClientProvider";
 
 // -------------- TEAM INTERFACES ----------------
 type Member = {
@@ -29,6 +30,14 @@ type Team = {
 };
 
 export default function WorkPage() {
+  return (
+    <StreamVideoProvider>
+      <InnerWorkPage />
+    </StreamVideoProvider>
+  );
+}
+
+function InnerWorkPage() {
   const params = useParams();
   const teamId = params.teamid?.toString();
   console.log("team id is ", teamId);
@@ -170,9 +179,13 @@ export default function WorkPage() {
           <div className="flex-1 border border-white p-4 rounded">
             <h2 className="text-lg font-medium mb-4">Participants</h2>
             <ul className="space-y-2">
-              {TeamData?.members.map((member) => (
-                <li key={member.id}>{member.name}</li>
-              )) || <li>No members</li>}
+              {TeamData?.members.length ? (
+                TeamData.members.map((member) => (
+                  <li key={member.id}>{member.name}</li>
+                ))
+              ) : (
+                <li>No members</li>
+              )}
             </ul>
           </div>
 
