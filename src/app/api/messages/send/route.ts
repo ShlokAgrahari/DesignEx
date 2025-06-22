@@ -4,8 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import Message from "@/models/Message";
 import { pusherServer } from "@/lib/pusher";
-import { writeFile } from "fs/promises";
-import path from "path";
+import  {cloudinary}  from "@/lib/cloudinary";
 import { v4 as uuid } from "uuid";
 
 export const config = {
@@ -27,13 +26,26 @@ export async function POST(req: Request) {
   const file = formData.get("image") as File | null;
 
   let imageUrl = null;
+
   if (file) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${uuid()}-${file.name}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
 
-    await writeFile(`${uploadDir}/${fileName}`, buffer);
-    imageUrl = `/uploads/${fileName}`;
+    // Convert buffer to base64 Data URI
+    const base64 = buffer.toString("base64");
+    const mime = file.type; // e.g., "image/jpeg"
+    const dataUri = `data:${mime};base64,${base64}`;
+
+    // Upload to Cloudinary
+    try {
+      const result = await cloudinary.uploader.upload(dataUri, {
+        folder: "chat-app",
+        public_id: `${uuid()}-${file.name}`,
+      });
+      imageUrl = result.secure_url;
+    } catch (err) {
+      console.error("Cloudinary upload error:", err);
+      return NextResponse.json({ error: "Image upload failed" }, { status: 500 });
+    }
   }
 
   const message = await Message.create({
@@ -48,5 +60,5 @@ export async function POST(req: Request) {
   const channel = roomId || receiverId;
   await pusherServer.trigger(channel!, "new-message", message);
 
-  return NextResponse.json(message);
+  return NextResponse.json({ success: true, message });
 }

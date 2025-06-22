@@ -29,6 +29,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
     "dom-to-image-more": "^3.6.0",

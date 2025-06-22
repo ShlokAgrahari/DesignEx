@@ -1,18 +1,26 @@
 import { connect } from "@/dbConfig/db";
 import Message from "@/models/Message";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { chatId: string } }
 ) {
   await connect();
+
+  const chatId = params.chatId; // ✅ No await here
+
   const messages = await Message.find({
     $or: [
-      { roomId: await params.chatId },
+      { roomId: chatId },
       {
         $and: [
-          { $or: [{ senderId: params.chatId }, { receiverId: params.chatId }] },
+          {
+            $or: [
+              { senderId: chatId },
+              { receiverId: chatId },
+            ],
+          },
         ],
       },
     ],
