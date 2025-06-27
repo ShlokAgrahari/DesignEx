@@ -53,13 +53,13 @@ const Navbar = () => {
 
   const [showSearch, setShowSearch] = useState(false);
   return (
-    <div className="bg-white/50 backdrop-blur-md shadow-lg z-10 rounded-xs px-1 sm:px-2 md:px-4 py-1 flex items-center justify-between mb-4">
-        <div className='hidden sm:flex items-center w-[40%] border rounded-xs shadow-sm px-3 py-2 bg-white'>
-            <Search/>
+    <div className="bg-white/20 backdrop-blur-md shadow-lg z-10 rounded-xs px-1 sm:px-2 md:px-4 py-1 flex items-center justify-between mb-4">
+        <div className='hidden sm:flex items-center w-[40%] border border-gray-600 rounded-xs shadow-sm px-3 py-2 bg-black'>
+            <Search color='white'/>
             <input
             type="text"
             placeholder="Search..."
-            className="px-4 w-full outline-none  text-sm bg-white"
+            className="px-4 w-full outline-none  text-sm bg-black text-white"
             value={search}
             onChange={(e)=>setSearch(e.target.value)}
           />

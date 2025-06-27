@@ -89,8 +89,8 @@ useEffect(() => {
   console.log("shared rooms are",filteredRooms);
    console.log(filteredRooms,viewMode,ownedRooms);
     return (
-  <div  ref={outerDivRef} className="flex flex-col gap-5">
-    <div className="flex gap-1">
+  <div  ref={outerDivRef} className="flex flex-col gap-5 w-full">
+    <div className="flex gap-1 w-full">
       <ViewModeButton
         onSelect={() => setViewMode("owns")}
         active={viewMode === "owns"}
