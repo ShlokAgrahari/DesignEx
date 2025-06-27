@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState } from "react";
+import { Paintbrush  ,  Handshake,Users, PrinterCheck} from 'lucide-react';
 import { useSession } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Printer, ChevronLeft, ChevronRight } from "lucide-react";
@@ -142,20 +143,19 @@ export default function Dashboard() {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="flex h-screen w-screen font-[Poppins] bg-linear-to-t from-white to-violet-500 overflow-hidden ">
-      <Sidebar
-        expanded={expanded}
-        setExpanded={setExpanded}
-        setJoin={setJoin}
-        activeLabel="Home"
-      />
+    <div className="flex w-screen font-[Poppins] bg-black overflow-hidden px-2 sm:px-8">
+     
 
       <div
-        className={`flex-1 flex flex-col p-2 sm:p-6 overflow-y-auto scrollbar-hide overflow-auto ${expanded ? "bg-white/30 backdrop-blur-lg blur-sm sm:blur-none" : ""}`}
+        className={`flex-1 flex flex-col p-2 sm:p-6  scrollbar-hide overflow-auto }`}
       >
         <Navbar />
+        <div className="flex flex-col items-center justify-center mb-8 py-4 mt-5 px-3">
+          <h1 className="text-purple-500 text-4xl font-bold">Let's start designing with DesignEx</h1>
+          <h2 className="text-orange-800 text-xl font-semibold">logos or postors or many things with your team</h2>
+        </div>
 
-        <div className="h-[300px] lg:h-[340px] w-full rounded-sm relative items-center justify-center mb-6 overflow-hidden">
+        <div className="h-[200px] w-full rounded-sm relative items-center justify-center mb-6 overflow-hidden">
           <div
             className={`flex transition ease-out duration-300 h-full`}
             style={{ transform: `translateX(-${current * 100}%)` }}
@@ -163,11 +163,12 @@ export default function Dashboard() {
             {slides.map((s, index) => (
               <div
                 key={index}
-                className="h-full w-full bg-center bg-cover bg-no-repeat min-w-full relative"
+                className="h-full w-full bg-center bg-cover bg-no-repeat min-w-full relative bg-black/50"
                 style={{ backgroundImage: `url(${s.image})` }}
               >
+                <div className="absolute inset-0 bg-black/50 z-0" />
                 <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-sm max-w-[70%] md:max-w-[50%]">
-                  <h2 className="text-lg sm:text-2xl md:text-4xl font-bold">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-bold">
                     {s.text}
                   </h2>
                 </div>
@@ -184,53 +185,54 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex mb-6 w-full flex-col sm:flex-row rounded-md shadow-xl ">
-          <div className="bg-white w-full h-[160px] lg:h-[200px] flex flex-col justify-center p-4 md:p-5 lg:p-7 sm:rounded-tl-md sm:rounded-bl-md">
-            <h2 className="text-2xl leading-6 md:text-3xl font-semibold text-[#de49eb] mb-1">
-              Printing shop nearby you
-            </h2>
-            <p className="text-md">
-              Easily locate trusted printing shops near you in just one click
-            </p>
-          </div>
-          <div
-            className="w-full h-[160px] lg:h-[200px] sm:rounded-tr-md sm:rounded-br-sm bg-no-repeat bg-cover bg-center"
-            style={{ backgroundImage: `url("/printer.jpg")` }}
-          >
-            <div className="flex items-center justify-center w-full h-full bg-black/50 rounded-md">
-              <button className="px-3 py-2 bg-white rounded-md text-black flex hover:bg-[#de49eb] hover:text-white">
-                <Printer />
-                <span className="ml-2">Printing Shop</span>
-              </button>
-            </div>
-          </div>
-        </div>
+       
 
-        <div className="flex flex-wrap gap-6 mb-6">
-          <button
-            onClick={() => createRoom()}
-            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
-          >
-            Create a Design
-          </button>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
-          >
-            Create a Team
-          </button>
-          <button
-            onClick={() => setJoin(true)}
-            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
-          >
-            Join a Team
-          </button>
-          <button
-            onClick={handleNearbyPrintShops}
-            className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:scale-105 transition-transform"
-          >
-            Nearby Printing Shop
-          </button>
+        <div className="flex flex-wrap gap-6 mb-6 p-4 bg-gray-950 rounded-md justify-between">
+          <div className="border flex-1 flex-col border-orange-400 rounded-md p-3 bg-black hover:scale-105 transition-transform min-w-[200px] ">
+            <Paintbrush stroke="currentColor" size={44} className=" text-orange-400"/>
+            <h3 className="text-orange-400 text-xl mb-2 mt-2">Create design</h3>
+            <button
+              onClick={() => createRoom()}
+              className=" text-white bg-orange-400 px-2 py-1 rounded-md text-lg shadow-xl hover:bg-orange-600 w-full"
+            >
+              Create
+            </button>
+          </div>
+
+          <div className="border flex-1 flex-col border-violet-500 rounded-md p-3 bg-black hover:scale-105 transition-transform  min-w-[200px]">
+            <Users stroke="currentColor" size={44} className=" text-violet-500"/>
+            <h3 className="text-violet-500 text-xl mb-2 mt-2">Create team</h3>
+            <button
+              onClick={() => setShowForm(true)}
+              className=" text-white bg-violet-500 px-2 py-1 rounded-md text-lg shadow-xl hover:bg-violet-800 w-full"
+            >
+              Add team 
+            </button>
+          </div>
+          
+          <div className="border flex-1 flex-col border-red-700 rounded-md p-3 bg-black hover:scale-105 transition-transform min-w-[200px] ">
+            <Handshake stroke="currentColor" size={44} className=" text-red-700"/>
+            <h3 className="text-red-700 text-xl mb-2 mt-2">collab with team</h3>
+            <button
+              onClick={() => setJoin(true)}
+              className=" text-white bg-red-700 px-2 py-1 rounded-md text-lg shadow-xl hover:bg-red-900 w-full"
+            >
+              Join team 
+            </button>
+          </div>
+
+
+          <div className="border flex-1 flex-col border-green-700 rounded-md p-3 bg-black hover:scale-105 transition-transform min-w-[200px]">
+            <PrinterCheck  stroke="currentColor" size={44} className=" text-green-700"/>
+            <h3 className="text-green-700 text-xl mb-2 mt-2">Nearby shop</h3>
+            <button
+              onClick={handleNearbyPrintShops}
+              className=" text-white bg-green-700 px-2 py-1 rounded-md text-lg shadow-xl hover:bg-green-900 w-full "
+            >
+              Printing
+            </button>
+          </div>
+         
         </div>
 
         <RoomsView ownedRooms={ownedRooms} roomInvites={roomInvites} />
