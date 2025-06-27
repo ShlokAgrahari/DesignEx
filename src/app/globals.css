@@ -7,6 +7,7 @@
 @plugin "daisyui";
 @tailwind utilities;
 @theme {
+  --breakpoint-xs: 26rem;
   --color-primary: #6366f1;
   --color-secondary: #ec4899;
   --color-darkBg: #1a1a2e;

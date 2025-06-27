@@ -36,7 +36,7 @@ export default function RootLayout({
           <LoadingProvider>
             <LoadingOverlay />
             <AuthProvider>
-              <StreamVideoProvider>{children}</StreamVideoProvider>
+              {children}
             </AuthProvider>
           </LoadingProvider>
         }
