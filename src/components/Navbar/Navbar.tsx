@@ -1,103 +1,122 @@
-import React, { useEffect, useState } from 'react'
-import { Search } from 'lucide-react';
-import { X } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Search, X } from "lucide-react";
 import { toast } from "react-hot-toast";
-import {useRouter} from 'next/navigation';
-import { signOut } from 'next-auth/react';
-import axios from 'axios';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const Navbar = () => {
   const router = useRouter();
-  const [search,setSearch] = useState("");
-  const [resultData,setResultData] = useState<Array<{ title: string }>>([]);
+  const [search, setSearch] = useState("");
+  const [resultData, setResultData] = useState<Array<{ title: string }>>([]);
   const user = useAuthStore((state) => state.user);
   const userId = user?.id;
-  const handleLogout = async () => {
-      try {
-        await signOut({ redirect: false });
-        router.push("/login");
-      } catch (error: any) {
-        console.error("Logout error:", error.message);
-        toast.error("Logout failed.");
-      }
-  };
 
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: false });
+      router.push("/login");
+    } catch (error: any) {
+      console.error("Logout error:", error.message);
+      toast.error("Logout failed.");
+    }
+  };
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (search.trim().length > 0) {
         fetchData(search);
       } else {
-        setResultData([]); 
+        setResultData([]);
       }
-    }, 400); 
+    }, 400);
 
-    return () => clearTimeout(delayDebounce); 
+    return () => clearTimeout(delayDebounce);
   }, [search]);
 
-
-  const fetchData = async(query:string)=>{
-      try {
-        const result = await axios.get(`/api/search?user=${userId}&search=${query}`);
-        const data = result.data;
-        const roomdata = data.Roomdata;
-        setResultData(roomdata);
-        console.log("data is",resultData);
-      } catch (error) {
-        console.log("search error is ",error);
-      }
+  const fetchData = async (query: string) => {
+    try {
+      const result = await axios.get(
+        `/api/search?user=${userId}&search=${query}`
+      );
+      const data = result.data;
+      const roomdata = data.Roomdata;
+      setResultData(roomdata);
+      console.log("data is", resultData);
+    } catch (error) {
+      console.log("search error is ", error);
+    }
   };
 
-
-
   const [showSearch, setShowSearch] = useState(false);
+
   return (
-    <div className="bg-white/20 backdrop-blur-md shadow-lg z-10 rounded-xs px-1 sm:px-2 md:px-4 py-1 flex items-center justify-between mb-4">
-        <div className='hidden sm:flex items-center w-[40%] border border-gray-600 rounded-xs shadow-sm px-3 py-2 bg-black'>
-            <Search color='white'/>
-            <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 w-full outline-none  text-sm bg-black text-white"
-            value={search}
-            onChange={(e)=>setSearch(e.target.value)}
-          />
-        </div>
-        <div className="sm:hidden flex items-center w-full">
+    <div className="bg-gradient-to-r from-black via-gray-900 to-gray-800 backdrop-blur-lg shadow-xl rounded-md px-4 py-3 flex items-center justify-between relative z-20 border border-gray-700 mb-5">
+      {/* Desktop Search */}
+      <div className="hidden sm:flex items-center w-[40%] border border-gray-600 rounded-md shadow-inner px-3 py-2 bg-gray-950/80">
+        <Search className="text-gray-300" />
+        <input
+          type="text"
+          placeholder="Search your designs..."
+          className="px-3 w-full outline-none text-sm bg-transparent text-white placeholder-gray-400"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* Mobile Search Toggle */}
+      <div className="sm:hidden flex items-center w-full">
         {!showSearch ? (
-          <button onClick={() => setShowSearch(true)} className='ml-2'>
-            <Search className="text-gray-700 w-6 h-6" />
+          <button onClick={() => setShowSearch(true)} className="ml-2">
+            <Search className="text-white w-6 h-6" />
           </button>
         ) : (
-          <div className="flex  bg-white border-b px-2 py-2 w-full items-center rounded-sm transition-all duration-200 ease">
+          <div className="flex items-center bg-white px-3 py-2 w-full rounded-md shadow-lg transition-all duration-200">
             <Search className="text-gray-500 mr-2" />
             <input
               type="text"
               placeholder="Search..."
               autoFocus
               value={search}
-              onChange={(e)=>setSearch(e.target.value)}
-              className="flex-1 outline-none text-sm bg-white w-full"
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1 outline-none text-sm bg-white text-black"
             />
-            <button onClick={() => setShowSearch(false)} className="ml-2 text-sm text-gray-600"><X/></button>
+            <button
+              onClick={() => setShowSearch(false)}
+              className="ml-2 text-gray-600"
+            >
+              <X />
+            </button>
           </div>
         )}
-        </div>
-        <div className='absolute top-full mt-1 max-h-64 overflow-y-auto w-full sm:w-[39%] bg-white rounded-md '>
-          {resultData.length>0 ? (resultData.map((room,index)=>(
-            <div key={index} className='px-3 py-2 hover:bg-gray-200 '> {room.title}</div>
-          ))):""}
-        </div>
-          
-        <div className={`flex overflow-hidden min-w-fit shrink-0 whitespace-nowrap gap-2 ${showSearch?"hidden":""}`}>
-            <button className="bg-purple-500 text-white px-4 py-2 rounded-sm hover:bg-purple-600 transition font-semibold"
-              onClick={handleLogout}>
-               Log Out
-            </button>
-        </div>
-    </div>
-  )
-}
+      </div>
 
-export default Navbar
+      {/* Search Results Dropdown */}
+      {resultData.length > 0 && (
+        <div className="absolute top-full left-0 sm:left-4 mt-2 max-h-60 overflow-y-auto w-full sm:w-[39%] bg-white rounded-md shadow-lg z-30 border border-gray-300">
+          {resultData.map((room, index) => (
+            <div
+              key={index}
+              className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+            >
+              {room.title}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Logout Button */}
+      <div className={`flex gap-2 min-w-fit ${showSearch ? "hidden" : ""}`}>
+        <button
+          className="bg-gradient-to-tr from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-md hover:brightness-110 transition font-semibold shadow-md"
+          onClick={handleLogout}
+        >
+          Log Out
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
