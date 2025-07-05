@@ -118,18 +118,11 @@ function InnerWorkPage() {
 
   // -------------------------------------------------------
 
-  const [expanded, setExpanded] = useState(true);
+
 
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-white text-black">
-      {/* Sidebar */}
-      <Sidebar
-        expanded={expanded}
-        setExpanded={setExpanded}
-        activeLabel=""
-      />
-        
+    <div className="flex h-screen w-screen overflow-hidden bg-black text-white">
 
       <ToastContainer
         position="top-right"
@@ -146,31 +139,31 @@ function InnerWorkPage() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col font-[Poppins]">
         {/* Header */}
-        <div className="flex flext-wrap xs:justify-between overflow-hidden flex-shrink items-center border-b border-black  bg-gray-200 md:p-6 p-4 mb-4 w-full">
+        <div className="flex flext-wrap xs:justify-between overflow-hidden flex-shrink items-center border-b border-black  bg-linear-to-t from-zinc-900 to-zinc-950 md:p-10 p-4 mb-4 w-full">
           <div className="flex-1 xs:flex-col max-w-[250px]">
-            <h1 className="text-sm xs:text-md md:text-xl font-semibold">
+            <h1 className="text-sm xs:text-md md:text-xl font-semibold text-white">
               Team : {TeamData?.teamName || "Team Name"}
             </h1>
-            <p className="text-[10px] xs:text-xs sm:text-sm text-gray-900">
+            <p className="text-[10px] xs:text-xs sm:text-sm text-gray-200 ">
               Leader Name : {TeamData?.leaderName || "Leader"}
             </p>
-            <p className="text-[10px] xs:text-xs sm:text-sm text-gray-900">
+            <p className="text-[10px] xs:text-xs sm:text-sm text-gray-200 ">
               Team Code : {TeamData?.teamId || "Code"}
             </p>
           </div>
           <div className=" flex-1 xs:flex-0" >
             <div className="flex flex-row p-2 ">
             <button
-              className="bg-[#de49eb] px-2 sm:px-4 py-2 rounded-full text-white  whitespace-nowrap sm:rounded text-sm sm:text-lg hover:bg-white hover:text-black transition mr-2"
+              className="bg-linear-to-bl from-violet-500 to-fuchsia-500 px-2 sm:px-4 py-2 rounded-full text-white  whitespace-nowrap sm:rounded text-sm sm:text-lg  hover:opacity-90 transition mr-2 font-semibold"
               onClick={() => router.push(`/teamchat/${teamId}`)}
             >
               <span className="hidden sm:inline">Open Chat </span><MessageSquareMore className="inline sm:hidden"/>
             </button>
   
             <button
-              className="bg-[#de49eb]  px-2 sm:px-4 py-2  whitespace-nowrap rounded-full text-white sm:rounded text-sm sm:text-lg hover:bg-white hover:text-black transition"
+              className="bg-linear-to-bl from-violet-500 to-fuchsia-500  px-2 sm:px-4 py-2  whitespace-nowrap rounded-full text-white sm:rounded text-sm sm:text-lg hover:opacity-90 transition font-semibold"
               onClick={isLeader ? createPersonalMeeting : joinMeeting}
             >
               <span className="hidden sm:inline">{isLeader ? "Start VC" : "Join VC"}</span> <Video className="inline sm:hidden"/>
@@ -180,10 +173,10 @@ function InnerWorkPage() {
         </div>
 
         {/* Content Area */}
-        <div className="flex flex-col md:flex-row gap-6 p-6 rounded">
+        <div className="flex flex-col md:flex-row gap-6 p-4 md:p-10 rounded-lg">
           {/* Participants Box */}
-          <div className="flex-1 border border-black p-4 rounded">
-            <div className="w-full h-48 bg-gray-200 mb-4 flex items-center justify-center rounded">
+          <div className="flex-1 border border-black bg-zinc-900 p-4 rounded-lg">
+            <div className="w-full h-48 bg-gray-800 mb-4 flex items-center justify-center rounded">
               project pic
             </div>
             <p className="text-center">
@@ -192,12 +185,12 @@ function InnerWorkPage() {
           </div>
 
           {/* Project Box */}
-          <div className="flex-1 bg-gray-200 p-4 rounded flex flex-col items-center w-full">
-            <h2 className="text-sm sm:text-lg font-medium mb-4 mt-4 w-full text-center">Team Members</h2>
+          <div className="flex-1 bg-zinc-900 p-4 rounded-lg flex flex-col items-center w-full">
+            <h2 className="text-sm sm:text-lg md:text-xl mb-4 mt-4 w-full text-center font-bold">Team Members</h2>
             <ul className="space-y-2 w-full px-4">
               {TeamData?.members.length ? (
                 TeamData.members.map((member) => (
-                  <div className="w-full bg-gray-100 p-2 px-4 rounded-md">
+                  <div className="w-full bg-linear-to-t from-zinc-900 to-zinc-950 p-2 px-4 rounded-md border border-black transition-all hover:transform hover:translate-y-[-4px] ease-in">
                     <li key={member.id} className="w-full">Username :  {member.name}</li>
                   </div>
                 ))
