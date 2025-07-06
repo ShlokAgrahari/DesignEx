@@ -52,7 +52,7 @@ const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <div className="bg-gradient-to-r from-black via-gray-900 to-gray-800 backdrop-blur-lg shadow-xl rounded-md px-4 py-3 flex items-center justify-between relative z-20 border border-gray-700 mb-5">
+    <div className="bg-gradient-to-r from-black via-gray-900 to-gray-800 backdrop-blur-lg shadow-xl rounded-md px-4 py-3 flex items-center justify-between relative z-20 border border-gray-700 mb-5 ">
       {/* Desktop Search */}
       <div className="hidden sm:flex items-center w-[40%] border border-gray-600 rounded-md shadow-inner px-3 py-2 bg-gray-950/80">
         <Search className="text-gray-300" />
@@ -108,6 +108,12 @@ const Navbar = () => {
 
       {/* Logout Button */}
       <div className={`flex gap-2 min-w-fit ${showSearch ? "hidden" : ""}`}>
+         <button
+          className="bg-gradient-to-tr from-red-600 to-orange-600 text-white px-4 py-2 rounded-md hover:brightness-110 transition font-semibold shadow-md"  
+          onClick={() => router.replace("/team")}
+        >
+          Teams
+        </button>
         <button
           className="bg-gradient-to-tr from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-md hover:brightness-110 transition font-semibold shadow-md"
           onClick={handleLogout}

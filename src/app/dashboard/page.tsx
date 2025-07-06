@@ -8,6 +8,7 @@ import {
   PrinterCheck,
   ChevronLeft,
   ChevronRight,
+  UserPlus,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -18,6 +19,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import { createRoom } from "@/actions/rooms";
 import RoomsView from "@/components/dashboard/RoomsView";
 import JoinForm from "@/components/Navbar/JoinForm";
+import { color } from "html2canvas/dist/types/css/types/color";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -152,7 +154,7 @@ export default function Dashboard() {
                 style={{ backgroundImage: `url(${s.image})` }}
               >
                 <div className="absolute inset-0 bg-black/50" />
-                <div className="absolute bottom-4 left-6 text-white text-lg sm:text-2xl font-semibold z-10">
+                <div className="absolute bottom-4 left-6 text-white text-lg sm:text-3xl md:text-4xl font-semibold z-10">
                   {s.text}
                 </div>
               </div>
@@ -206,7 +208,7 @@ export default function Dashboard() {
                 color: "from-green-500 to-green-400",
                 action: handleNearbyPrintShops,
                 button: "Locate Shops",
-              },
+              }
             ].map((card, idx) => (
               <div
                 key={idx}
