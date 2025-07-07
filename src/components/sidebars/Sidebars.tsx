@@ -195,10 +195,10 @@ export default function Sidebars({
         <div className="fixed left-3 top-3 flex h-[48px] w-[250px] items-center justify-between rounded-xl border bg-white p-4">
           <Link href="/dashboard">
             <img
-              src="/figma-logo.svg"
-              alt="Figma logo"
-              className="h-[18px w-[18px]"
-            />
+      src="/logo.png"
+      alt="DesignEx Logo"
+      className="w-10 h-10 rounded-full shadow-2xl border-2 border-black hover:scale-110 transition-transform duration-300"
+    />
           </Link>
           <h2 className="scroll-m-20 text-[13px] font-medium">{roomName}</h2>
           <PiSidebarSimpleThin

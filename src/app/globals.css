@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap');
+@tailwind base;
+@tailwind utilities;
+@tailwind utilities;
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -21,9 +26,57 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #0f0f0f;
+  overflow-x: hidden;
+}
+
 
 @media (prefers-color-scheme: dark) {
   /* your dark classes apply */
+}
+
+
+@layer base {
+  [data-scroll] {
+    will-change: transform;
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 18s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 18s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-reverse {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
 }
 
 

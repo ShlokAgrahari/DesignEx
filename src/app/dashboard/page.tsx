@@ -73,8 +73,9 @@ export default function Dashboard() {
         });
       },
       (error) => {
-        console.error("Location error:", error);
-      }
+  console.error("Location error:", error?.message || error || "Unknown error");
+}
+
     );
   }, [session]);
 
