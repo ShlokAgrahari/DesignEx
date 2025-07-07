@@ -16,7 +16,7 @@ export async function GET(request:NextRequest){
         const data = await Room.find({
             title:{$regex:q,$options:"i"},
         });
-
+        console.log("Data is",data);
         return NextResponse.json({Roomdata:data},{status:200});
     } catch (error) {
         console.log("searcing api error",error);

@@ -9,7 +9,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 const Navbar = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [resultData, setResultData] = useState<Array<{ title: string }>>([]);
+  const [resultData, setResultData] = useState<Array<{ title: string,_id:object}>>([]);
   const user = useAuthStore((state) => state.user);
   const userId = user?.id;
 
@@ -94,11 +94,12 @@ const Navbar = () => {
 
       {/* Search Results Dropdown */}
       {resultData.length > 0 && (
-        <div className="absolute top-full left-0 sm:left-4 mt-2 max-h-60 overflow-y-auto w-full sm:w-[39%] bg-white rounded-md shadow-lg z-30 border border-gray-300">
+        <div className="absolute top-full left-0 sm:left-4 mt-2 max-h-60 overflow-y-auto w-full sm:w-[39%] bg-gray rounded-md shadow-lg z-30 border border-gray-300">
           {resultData.map((room, index) => (
             <div
               key={index}
               className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+              onClick={() => router.push(`/dashboard/${room._id}`)}
             >
               {room.title}
             </div>

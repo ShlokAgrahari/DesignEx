@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: Promise<ParamsType> }) 
     .map((inv: any) => inv.userId?._id?.toString())
     .filter(Boolean);
 
-  const room = await Room.findById(id).lean<LeanRoom>(); // 👈 Add type here
+  const room = await Room.findById(id).lean<LeanRoom>(); 
   if (!room) redirect("/404");
 
   if (
