@@ -16,29 +16,29 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [teamName,setTeamName]=useState("");
+  const [teamName, setTeamName] = useState("");
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
-const fetchTeam = async () => {
-  try {
-    const response = await axios.get("/api/get-team", {
-              params: { team_id: chatId },
-            });
-            const result = response.data;
-            console.log("result from get-team:", result); 
-            console.log(result.team?.teamName);
-    setTeamName(result.team?.teamName); 
-  } catch (error) {
-    console.error("Error fetching team:", error);
-  }
-};
+  const fetchTeam = async () => {
+    try {
+      const response = await axios.get("/api/get-team", {
+        params: { team_id: chatId },
+      });
+      const result = response.data;
+      console.log("result from get-team:", result);
+      console.log(result.team?.teamName);
+      setTeamName(result.team?.teamName);
+    } catch (error) {
+      console.error("Error fetching team:", error);
+    }
+  };
 
   useEffect(() => {
     if (status !== "authenticated" || !chatId) return;
-    console.log("team is",chatId);
+    console.log("team is", chatId);
     const fetchMessages = async () => {
       const res = await axios.get(`/api/messages/${chatId}`);
       setMessages(res.data);
@@ -62,34 +62,32 @@ const fetchTeam = async () => {
   }, [messages]);
 
   const sendMessage = async () => {
-  if (!newMessage.trim() && !imageFile) return;
+    if (!newMessage.trim() && !imageFile) return;
 
-  const formData = new FormData();
-  console.log(formData);
-  formData.append("receiverId", chatId);
-  if (newMessage) formData.append("content", newMessage);
-  if (imageFile){
-    console.log(imageFile);
-formData.append("image", imageFile);
-  } 
-
-  try {
-    const res = await axios.post("/api/messages/send", formData);
-
-    if (res.data?.message) {
-      // Add message instantly
-      setMessages((prev) => [...prev, res.data.message]);
+    const formData = new FormData();
+    console.log(formData);
+    formData.append("receiverId", chatId);
+    if (newMessage) formData.append("content", newMessage);
+    if (imageFile) {
+      console.log(imageFile);
+      formData.append("image", imageFile);
     }
 
-    
-    setNewMessage("");
-setImageFile(null);
-setImagePreview(null); // 👈 this line resets the preview
+    try {
+      const res = await axios.post("/api/messages/send", formData);
 
-  } catch (err) {
-    console.error("Send error:", err);
-  }
-};
+      if (res.data?.message) {
+        // Add message instantly
+        setMessages((prev) => [...prev, res.data.message]);
+      }
+
+      setNewMessage("");
+      setImageFile(null);
+      setImagePreview(null); // 👈 this line resets the preview
+    } catch (err) {
+      console.error("Send error:", err);
+    }
+  };
 
   const deleteMessage = async (id: string) => {
     try {
@@ -163,29 +161,29 @@ setImagePreview(null); // 👈 this line resets the preview
         })}
         <div ref={scrollRef}></div>
       </div>
-{imagePreview && (
-  <div className="px-4 pb-2 inline-block">
-    <div className="flex justify-start">
-      <div className="relative w-fit border rounded-lg shadow-md bg-white">
-        <img
-          src={imagePreview}
-          alt="Selected preview"
-          className="rounded-lg max-h-48 object-cover"
-        />
-        <button
-          onClick={() => {
-            setImageFile(null);
-            setImagePreview(null);
-          }}
-          className="absolute top-1 right-1 bg-white bg-opacity-90 text-red-500 rounded-full p-1 hover:bg-opacity-100 transition"
-          title="Remove image"
-        >
-          ✖
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      {imagePreview && (
+        <div className="px-4 pb-2 inline-block">
+          <div className="flex justify-start">
+            <div className="relative w-fit border rounded-lg shadow-md bg-white">
+              <img
+                src={imagePreview}
+                alt="Selected preview"
+                className="rounded-lg max-h-48 object-cover"
+              />
+              <button
+                onClick={() => {
+                  setImageFile(null);
+                  setImagePreview(null);
+                }}
+                className="absolute top-1 right-1 bg-white bg-opacity-90 text-red-500 rounded-full p-1 hover:bg-opacity-100 transition"
+                title="Remove image"
+              >
+                ✖
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white px-4 py-3 flex gap-2 items-center border-t border-gray-300">
         <label
@@ -194,26 +192,24 @@ setImagePreview(null); // 👈 this line resets the preview
         >
           <FaPaperclip size={20} />
         </label>
-        
-
 
         <input
-  id="image-upload"
-  type="file"
-  accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-    } else {
-      setImageFile(null);
-      setImagePreview(null);
-    }
-  }}
-  className="hidden"
-/>
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setImageFile(file);
+              const previewUrl = URL.createObjectURL(file);
+              setImagePreview(previewUrl);
+            } else {
+              setImageFile(null);
+              setImagePreview(null);
+            }
+          }}
+          className="hidden"
+        />
 
         <input
           type="text"
