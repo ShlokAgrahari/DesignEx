@@ -43,7 +43,7 @@ const JoinForm : React.FC<JoinFormProps> = ({setJoin}) => {
                     placeholder="Team ID"
                     value={teamId}
                     onChange={(e) => setTeamId(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-2"
+                    className="border border-gray-300 rounded-md px-3 py-2 text-gray-800"
                 />
                 <div className="flex justify-end gap-2">
                 <button

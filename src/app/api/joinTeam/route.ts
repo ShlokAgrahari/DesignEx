@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       {
         $push: {
           myTeams: {
-            teamId: teamId,
+            teamId: team._id,
             teamName: team.teamName,
             projectName: team.projectName, // optional
           },
