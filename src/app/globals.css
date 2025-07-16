@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap');
-@tailwind base;
+@import url("https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap");
+@import "tailwindcss/preflight";
 @tailwind utilities;
 @tailwind utilities;
 
@@ -35,11 +35,9 @@ body {
   overflow-x: hidden;
 }
 
-
 @media (prefers-color-scheme: dark) {
   /* your dark classes apply */
 }
-
 
 @layer base {
   [data-scroll] {
@@ -79,11 +77,10 @@ body {
   }
 }
 
-
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 @theme inline {
