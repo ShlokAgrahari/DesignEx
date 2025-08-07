@@ -1,9 +1,11 @@
 "use client";
-
+import React from "react";
 import { Orbitron, Audiowide } from "next/font/google";
 import Navbar from "./section/navbar";
 import Hero from "./section/hero";
-
+import About from "./section/About";
+import Testimonial from "./section/Testimonial";
+import Footer from "./section/Footer";
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["400", "700"] });
 const audiowide = Audiowide({ subsets: ["latin"], weight: "400" });
 
@@ -13,6 +15,9 @@ export default function Home() {
       <div className="container mx-auto max-w-7xl">
         <Navbar />
         <Hero />
+        <About />
+        <Testimonial />
+        <Footer />
       </div>
     </div>
   );
