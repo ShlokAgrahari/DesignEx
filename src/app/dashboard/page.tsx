@@ -73,9 +73,11 @@ export default function Dashboard() {
         });
       },
       (error) => {
-  console.error("Location error:", error?.message || error || "Unknown error");
-}
-
+        console.error(
+          "Location error:",
+          error?.message || error || "Unknown error"
+        );
+      }
     );
   }, [session]);
 
@@ -209,7 +211,7 @@ export default function Dashboard() {
                 color: "from-green-500 to-green-400",
                 action: handleNearbyPrintShops,
                 button: "Locate Shops",
-              }
+              },
             ].map((card, idx) => (
               <div
                 key={idx}
