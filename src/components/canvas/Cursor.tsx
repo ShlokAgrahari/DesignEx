@@ -1,21 +1,15 @@
 // Cursor.tsx
 import { memo } from "react";
-import { useOther } from "@liveblocks/react/suspense";
 import CursorSVG from "../../../public/CursorSVG";
-import { connectionIdToColor } from "@/helper/util";
 
 type CursorProps = {
-  connectionId: number;
+  x: number;
+  y: number;
+  color: string;
+  message?: string;
 };
 
-const Cursor = ({ connectionId }: CursorProps) => {
-  const presence = useOther(connectionId, (user) => user.presence);
-
-  if (!presence?.cursor) return null;
-
-  const { x, y } = presence.cursor;
-  const color = connectionIdToColor(connectionId);
-
+const Cursor = ({ x, y, color, message }: CursorProps) => {
   return (
     <div
       className="pointer-events-none absolute left-0 top-0"
@@ -27,7 +21,7 @@ const Cursor = ({ connectionId }: CursorProps) => {
       <CursorSVG color={color} />
 
       {/* Optional message */}
-      {presence.message && (
+      {message && (
         <div
           className="absolute left-2 top-5 px-4 py-2"
           style={{
@@ -36,7 +30,7 @@ const Cursor = ({ connectionId }: CursorProps) => {
           }}
         >
           <p className="whitespace-nowrap text-sm leading-relaxed text-white">
-            {presence.message}
+            {message}
           </p>
         </div>
       )}

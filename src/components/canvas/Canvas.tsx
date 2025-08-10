@@ -18,7 +18,7 @@ import {
   CanvasState,
   XYWH,
 } from "@/types/types";
-
+import { useLoading } from "@/context/LoadingContext";
 import { nanoid } from "nanoid";
 import { LiveObject, User } from "@liveblocks/client";
 import { useEffect, useState, useCallback } from "react";
@@ -30,6 +30,7 @@ import useDeleteLayers from "@/hooks/useDeleteLayers";
 import SelectionTools from "./SelectionTools";
 import Sidebars from "../sidebars/Sidebars";
 import MultiplayerGuides from "./MultiplayerGuides";
+import LiveCursors from "./LiveCursors";
 
 
 
@@ -44,12 +45,7 @@ export default function Canvas({
   roomId: string;
   othersWithAccessToRoom: User[];
 }) {
-   const room = useRoom();
-
-  if (room == null) {
-    // not yet connected to Liveblocks
-    return null;
-  }
+    const room = useRoom();
   const others = useOthers();
   const userCount = others.length;
   const roomColor = useStorage((root) => root.roomColor);
@@ -71,8 +67,11 @@ export default function Canvas({
   const [cursorState, setCursorState] = useState<CursorState>({
   mode: CursorMode.Hidden,
 });
+const { setLoading } = useLoading();
 
    const [{ cursor }, setMyPresence] = useMyPresence() as any;
+
+
 
   const selectAllLayers = useMutation(
     ({ setMyPresence }) => {
@@ -522,20 +521,35 @@ const updateSelectionNet = useMutation(
     [canvasState, setState, insertLayer, unselectLayers, history],
   );
 
+
+  useEffect(() => {
+    if (!room || !storageReady) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [room, storageReady, setLoading]);
+
+  if (!room || !storageReady) {
+    // Optionally also return null or skeleton while loading
+    return null;
+  }
+
   return (
     
     <div className="flex h-screen w-full">
       {/* <div>There are {userCount} other user(s) online</div>; */}
       <main className="fixed left-0 right-0 h-screen overflow-y-auto">
-      {/* {cursor && (
+      {cursor && (
         <CursorChat
         cursor={cursor}
         cursorState={cursorState}
         setCursorState={setCursorState}
         updateMyPresence={setMyPresence}/>
-      )} */}
+      )}
 
 
+<LiveCursors />
 
 
         {/* <div>There are {userCount} other user(s) online</div>; */}

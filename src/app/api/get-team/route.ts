@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     await connect();
 
     const _id = req.nextUrl.searchParams.get("team_id");
-
+    console.log("team id in server is",_id);
     if (!_id) {
       return Response.json(
         { success: false, message: "team_id is required" },

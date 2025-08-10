@@ -116,7 +116,7 @@ export default function Sidebars({
              <div className="flex items-center">
   <Link href="/dashboard" className="flex items-center gap-2">
     <img
-      src="/logo.png"
+      src="/designX.jpg"
       alt="DesignEx Logo"
       className="w-10 h-10 rounded-full shadow-2xl border-2 border-black hover:scale-110 transition-transform duration-300"
     />

@@ -34,6 +34,10 @@ const teamSchema = new Schema({
             required:true,
             default:false,
     },
+     projectImage: {
+    type: String,
+    default: "/images/project-illustration.svg", // Optional: fallback image
+  },
     members: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,

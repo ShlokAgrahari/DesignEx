@@ -25,6 +25,7 @@ type Team = {
   roomId: string;
   leaderId: string;
   leaderName: string;
+  projectImage:string;
   isActive: boolean;
   members: Member[];
 };
@@ -64,19 +65,39 @@ function InnerWorkPage() {
     return false;
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setProjectImage(result);
-        setIsCustomImage(true);
-        localStorage.setItem("projectImage", result);
-      };
-      reader.readAsDataURL(file);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+    if (TeamData?._id) {
+  formData.append("teamId", TeamData._id.toString());
+}
+ // add team ID so backend knows which team
+
+    const res = await fetch("/api/upload-team-image", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data?.imageUrl) {
+      setProjectImage(data.imageUrl);
+      setIsCustomImage(true);
+      localStorage.setItem("projectImage", data.imageUrl);
+      toast.success("Image uploaded successfully!");
+    } else {
+      toast.error("Upload failed");
     }
-  };
+  } catch (err) {
+    console.error("Upload error", err);
+    toast.error("Upload failed");
+  }
+};
+
 
   const handleRemoveImage = () => {
     setProjectImage("/images/project-illustration.svg");
@@ -189,10 +210,11 @@ function InnerWorkPage() {
           <div className="flex-1 bg-gradient-to-tr from-zinc-800 to-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-md transition-all hover:scale-[1.01]">
             <div className="w-full h-64 sm:h-72 md:h-80 relative rounded-xl overflow-hidden mb-4">
               <img
-                src={projectImage}
-                alt="Project Preview"
-                className="w-full h-full object-cover rounded-xl"
-              />
+  src={TeamData?.projectImage || "/images/project-illustration.svg"}
+  alt="Project Preview"
+  className="w-full h-full object-cover rounded-xl"
+/>
+
             </div>
             {isLeader && (
               <div className="flex justify-center gap-4 mb-4">

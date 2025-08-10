@@ -249,14 +249,14 @@ export default function Dashboard() {
                   placeholder="Team Name"
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-gray-800"
                 />
                 <input
                   type="text"
                   placeholder="Project Name"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-gray-800"
                 />
                 <div className="flex justify-end gap-2">
                   <button

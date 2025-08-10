@@ -47,7 +47,11 @@ export default async function Page({ params }: { params: Promise<ParamsType> }) 
       <Canvas
       roomName={room.title}
         roomId={id}
-        othersWithAccessToRoom={invites.map((x) => x.userId)}
+        othersWithAccessToRoom={invites.map((x) => ({
+        _id: x.userId._id.toString(),
+        username: x.userId.username,
+        email: x.userId.email,
+      }))}
         />
     </LiveblocksRoomProvider>
   );
