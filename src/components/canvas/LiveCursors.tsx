@@ -1,24 +1,30 @@
-// import Cursor from "./Cursor";
-// import { COLORS } from "@/constants";
-// import { LiveCursorProps } from "@/types/type";
+import { useOthers } from "@liveblocks/react";
+import Cursor from "./Cursor";
+import { COLORS } from "@/constants";
 
-// // display all other live cursors
-// const LiveCursors = ({ others }: LiveCursorProps) => {
-//   return others.map(({ connectionId, presence }) => {
-//     if (presence == null || !presence?.cursor) {
-//       return null;
-//     }
+// Display all other live cursors
+const LiveCursors = () => {
+  const others = useOthers();
 
-//     return (
-//       <Cursor
-//         key={connectionId}
-//         color={COLORS[Number(connectionId) % COLORS.length]}
-//         x={presence.cursor.x}
-//         y={presence.cursor.y}
-//         message={presence.message}
-//       />
-//     );
-//   });
-// };
+  if (!others || others.length === 0) return null;
 
-// export default LiveCursors;
+  return (
+    <>
+      {others.map(({ connectionId, presence }) => {
+        if (!presence?.cursor) return null;
+
+        return (
+          <Cursor
+            key={connectionId}
+            color={COLORS[connectionId % COLORS.length]}
+            x={presence.cursor.x}
+            y={presence.cursor.y}
+            message={presence.message}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+export default LiveCursors;
