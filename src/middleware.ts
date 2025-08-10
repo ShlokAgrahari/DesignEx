@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 function isPublic(pathname: string) {
-  const open = ["/login", "/api/auth"];
+  const open = ["/","/login", "/api/auth"];
   if (open.some((p) => pathname.startsWith(p))) return true;
   return (
     pathname.startsWith("/_next") ||
