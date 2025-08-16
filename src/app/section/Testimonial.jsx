@@ -87,7 +87,7 @@ export default function Testimonial() {
         ></div>
 
         <h2 className="text-heading text-center mb-10 text-white font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight relative z-10">
-          Hear From Our Clients
+          Hear From Our Users
         </h2>
         <div className="relative flex flex-col items-center justify-center w-full mt-8 overflow-hidden">
           <Marquee pauseOnHover className="[--duration:20s] mb-4">
