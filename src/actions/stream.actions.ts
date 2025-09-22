@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { StreamClient } from "@stream-io/node-sdk";
 
 
-const apiKey = "agrqaxj4guaj";
-const apiSecret = "fzmwezpz44qp3h73z6yfjev96h45xn2kzsz68epm7d282ufpgfewgt95x9d5r6t5";
+const apiKey = process.env.API_KEY;
+const apiSecret = process.env.API_SECRET;
 
 export const tokenProvider = async()=>{
     
